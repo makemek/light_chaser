@@ -13,23 +13,29 @@ class SerialController(Observer):
     def __init__(self, view):
         self.__port = PySerial.Serial()
         self.__view = view
-        self.__view.setConnectButtonListener(self.openPort)
+        self.__view.setConnectButtonListener(self.__connect)
+
+        self.__isConnected = False
 
     def openPort(self):
         print("Open port")
         comName = self.__view.getPort()
+        print(comName)
+
         if len(comName) == 0:
             return
         
         try:
             self.__port.setPort(comName)
             self.__port.setBaudrate(9600)
-            self.__port.open()
             self.__port.setTimeout(2)
+            self.__port.open()
             
             self.__view.setConnect(True)
+
         except PySerial.serialutil.SerialException:
-            QErrorMessage("Unable to open port: + " + comName)
+            messageBox = QMessageBox()
+            messageBox.critical(None, "Port initialization failed", "Unable to open port '{}'".format(comName))
 
     def closePort(self):
         self.sendByte(0)
@@ -47,6 +53,12 @@ class SerialController(Observer):
         self.sendByte(color.green())
         self.sendByte(color.blue())
 
+    def __connect(self):
+        if self.__isConnected:
+            self.openPort()
+        else:
+            self.closePort()
+
 class SerialView(View):
 
     def __init__(self, statusLabel, connectButton, parent=None):
@@ -63,8 +75,6 @@ class SerialView(View):
         ui.activateWindow()
         ui.exec_() # keep executing until it closes.
         
-        print("After")
-
         return ui.getPort()
 
     def setConnect(self, isConnect):
@@ -86,16 +96,20 @@ class PortView(QDialog, View):
         super(PortView, self).__init__(parent)
 
         self.setWindowTitle("Select Port")
-        self.createUi()
-        self.refreshPort()
+        self.__createUi()
+        self.__connectSignal()
 
-    def createUi(self):
+        self.__portName = ""
+
+        self.refreshPort()
+        #self.__portList.addItems(["COM1","COM2","COM3","COM4"])
+
+    def __createUi(self):
         self.__portList = QComboBox()
         self.__message = QLabel("Port : ")
         self.__okBt = QPushButton("OK")
         
         self.__refreshBt = QPushButton("Refresh")
-        self.__refreshBt.clicked.connect(self.refreshPort)
         
         portLayout = QHBoxLayout()
         portLayout.addWidget(self.__message)
@@ -110,9 +124,21 @@ class PortView(QDialog, View):
         mainLayout.addLayout(buttonLayout)
         
         self.setLayout(mainLayout)
+        
+    def __connectSignal(self):
+        self.__refreshBt.clicked.connect(self.refreshPort)
+        self.__portList.currentIndexChanged.connect(self.__setPort)
+        self.__okBt.clicked.connect(lambda: QDialog.reject(self))
+
+    def reject(self):
+        self.__portName = ""
+        QDialog.reject(self)
 
     def getPort(self):
-        return self.__portList.currentText()
+        return self.__portName
+
+    def __setPort(self, idx):
+        self.__portName = self.__portList.currentText()
 
     def refreshPort(self):
         self.__portList.clear()
