@@ -61,7 +61,7 @@ class SerialView(View):
         
         ui = PortView(self.__parent)
         ui.activateWindow()
-        ui.show()
+        ui.exec_() # keep executing until it closes.
         
         print("After")
 
