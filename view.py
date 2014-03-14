@@ -1,6 +1,6 @@
 class View:
 
-    def setEnable(isEnable):
+    def setEnabled(isEnable):
         raise NotImplementedError
 
     def setVisible(isVisible):
