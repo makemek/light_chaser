@@ -1,5 +1,6 @@
 # User ignore files
 __pycache__/
+testRun.py
 
 
 ## Ignore Visual Studio temporary files, build results, and
