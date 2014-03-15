@@ -113,13 +113,15 @@ class PortView(QDialog, View):
         super(PortView, self).__init__(parent)
 
         self.setWindowTitle("Select Port")
+        self.setFixedSize(self.minimumWidth(), self.minimumHeight()) #lock screensize
+
         self.__createUi()
         self.__connectSignal()
 
         self.__portName = ""
 
-        #self.refreshPort()
-        self.__portList.addItems(["COM1","COM2","COM3","COM4"])
+        self.refreshPort()
+        #self.__portList.addItems(["COM1","COM2","COM3","COM4"])
 
     def __createUi(self):
         self.__portList = QComboBox()
