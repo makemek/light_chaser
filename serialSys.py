@@ -13,7 +13,7 @@ class SerialController(Observer):
     def __init__(self, view):
         self.__port = PySerial.Serial()
         self.__view = view
-        self.__view.setConnectButtonListener(self.__connect)
+        self.__view.setConnectButtonListener(self.__toggle)
 
         self.__isConnected = False
 
@@ -22,27 +22,22 @@ class SerialController(Observer):
         comName = self.__view.getPort()
         print(comName)
 
-        if len(comName) == 0:
-            return
-        
-        try:
-            self.__port.setPort(comName)
-            self.__port.setBaudrate(9600)
-            self.__port.setTimeout(2)
-            self.__port.open()
-            
-            self.__view.setConnect(True)
+        if comName == "":
+            raise ValueError
 
-        except PySerial.serialutil.SerialException:
-            messageBox = QMessageBox()
-            messageBox.critical(None, "Port initialization failed", "Unable to open port '{}'".format(comName))
+        self.__port.setPort(comName)
+        self.__port.setBaudrate(9600)
+        self.__port.setTimeout(2)
+        self.__port.open()
+            
+        
 
     def closePort(self):
         self.sendByte(0)
         self.sendByte(0)
         self.sendByte(0)
         self.__port.close()
-        self.__view.setConnect(False)
+        
 
     def sendByte(self, byte):
         self.__port.write(chr(byte).encode())
@@ -53,19 +48,38 @@ class SerialController(Observer):
         self.sendByte(color.green())
         self.sendByte(color.blue())
 
-    def __connect(self):
-        if self.__isConnected:
-            self.openPort()
+    def __toggle(self):
+        if not self.__isConnected:
+            try:
+                self.openPort()
+                self.__view.setConnect(True)
+                self.__isConnected = True
+
+            except PySerial.serialutil.SerialException as e:
+                QMessageBox().critical(None, "Port initialization failed", e.args[0])
+
+            # cancel seclection -> invalid port name
+            except ValueError:
+                pass
+                
         else:
-            self.closePort()
+            try:
+                self.closePort()
+                self.__isConnected = False
+                self.__view.setConnect(False)
+
+            except PySerial.serialutil.SerialException as e:
+                QMessageBox().critical(None, "Port initialization failed", e.args[0])
+
 
 class SerialView(View):
 
-    def __init__(self, statusLabel, connectButton, parent=None):
+    def __init__(self, statusLabel, connectButton, ledSwitch, parent=None):
         self.__parent = parent
-        self.__status = statusLabel
 
+        self.__status = statusLabel
         self.__connectBt = connectButton
+        self.__ledSwitch = ledSwitch
         
     def getPort(self):
         
@@ -87,8 +101,11 @@ class SerialView(View):
             self.__status.setText(disconnectMsg)
             self.__connectBt.setText("Connect")
 
+        self.__ledSwitch.setEnabled(isConnect)
+       
     def setConnectButtonListener(self, func):
         self.__connectBt.clicked.connect(func)
+
 
 class PortView(QDialog, View):
     
@@ -101,8 +118,8 @@ class PortView(QDialog, View):
 
         self.__portName = ""
 
-        self.refreshPort()
-        #self.__portList.addItems(["COM1","COM2","COM3","COM4"])
+        #self.refreshPort()
+        self.__portList.addItems(["COM1","COM2","COM3","COM4"])
 
     def __createUi(self):
         self.__portList = QComboBox()

@@ -26,8 +26,11 @@ class LightChaser(QWidget):
         connectBt = QPushButton
         connectBt = self.__gui.findChild(connectBt, "connectBt")
 
+        ledSwitch = QRadioButton
+        ledSwitch = self.__gui.findChild(ledSwitch, "ledSwitch")
+
         # Call Serial MVC
-        self.__controller = SerialController(SerialView(status, connectBt, self))
+        self.__controller = SerialController(SerialView(status, connectBt, ledSwitch, self))
         
         
         
