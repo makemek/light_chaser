@@ -13,8 +13,9 @@ class SerialController(Observer):
     def __init__(self, view):
         self.__port = PySerial.Serial()
         self.__view = view
-        self.__view.setConnectButtonListener(self.__toggle)
-
+        self.__view.setConnectButtonListener(self.__bridgeConnection)
+        #self.__view.setLEDListener(self.__toggleLED)
+        
         self.__isConnected = False
 
     def openPort(self):
@@ -30,12 +31,15 @@ class SerialController(Observer):
         self.__port.setTimeout(2)
         self.__port.open()
             
-        
 
     def closePort(self):
-        self.sendByte(0)
-        self.sendByte(0)
-        self.sendByte(0)
+        print("Close Port")
+        try:
+            self.sendByte(0)
+            self.sendByte(0)
+            self.sendByte(0)
+        except:
+            pass
         self.__port.close()
         
 
@@ -48,7 +52,7 @@ class SerialController(Observer):
         self.sendByte(color.green())
         self.sendByte(color.blue())
 
-    def __toggle(self):
+    def __bridgeConnection(self):
         if not self.__isConnected:
             try:
                 self.openPort()
@@ -61,7 +65,7 @@ class SerialController(Observer):
             # cancel seclection -> invalid port name
             except ValueError:
                 pass
-                
+               
         else:
             try:
                 self.closePort()
@@ -71,21 +75,43 @@ class SerialController(Observer):
             except PySerial.serialutil.SerialException as e:
                 QMessageBox().critical(None, "Port initialization failed", e.args[0])
 
+    def __toggleLED(self, isChecked):
+        if not isChecked:
+            self.sendByte(0)
+            self.sendByte(0)
+            self.sendByte(0)
 
-class SerialView(View):
+class SerialView(QWidget):
 
-    def __init__(self, statusLabel, connectButton, ledSwitch, parent=None):
+    def __init__(self, parent=None):
         self.__parent = parent
+        super(SerialView, self).__init__(self.__parent)
 
-        self.__status = statusLabel
-        self.__connectBt = connectButton
-        self.__ledSwitch = ledSwitch
+        self.__statusLabel = QLabel("Arduino Status")
+        self.__status = QLabel()
+        self.__connectBt = QPushButton()
+        self.__ledSwitch = QRadioButton("Turn on LED")
+        self.__ledSwitch.setEnabled(False)
+
+        self.setConnect(False)
+
+        stat = QHBoxLayout()
+        stat.addWidget(self.__statusLabel)
+        stat.addWidget(self.__status)
+        stat.addWidget(self.__connectBt)
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addLayout(stat)
+        mainLayout.addWidget(self.__ledSwitch)
+
+        self.setLayout(mainLayout)
+        
         
     def getPort(self):
         
         print("getPort()")
         
-        ui = PortView(self.__parent)
+        ui = PortView(self)
         ui.activateWindow()
         ui.exec_() # keep executing until it closes.
         
@@ -106,8 +132,14 @@ class SerialView(View):
     def setConnectButtonListener(self, func):
         self.__connectBt.clicked.connect(func)
 
+    def setLEDListener(self, func):
+        self.__ledSwitch.toggled.connect(func)
 
-class PortView(QDialog, View):
+    def setLEDSwitch(self, isEnable):
+        self.__ledSwitch.setEnabled(isEnable)
+
+
+class PortView(QDialog):
     
     def __init__(self, parent=None):
         super(PortView, self).__init__(parent)
