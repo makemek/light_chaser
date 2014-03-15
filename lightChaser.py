@@ -8,7 +8,7 @@ class LightChaser(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
 
-        self.__uiFile = "SE DEV UI Design new ver.ui"
+        self.__uiFile = "projectGUI.ui"
         directory = "./" + self.__uiFile
 
         loader = QUiLoader()
