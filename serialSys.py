@@ -87,10 +87,10 @@ class SerialView(QWidget):
         self.__parent = parent
         super(SerialView, self).__init__(self.__parent)
 
-        self.__statusLabel = QLabel("Arduino Status")
-        self.__status = QLabel()
-        self.__connectBt = QPushButton()
-        self.__ledSwitch = QRadioButton("Turn on LED")
+        self.__statusLabel = QLabel("Arduino Status", self)
+        self.__status = QLabel(self)
+        self.__connectBt = QPushButton(self)
+        self.__ledSwitch = QRadioButton("Turn on LED", self)
         self.__ledSwitch.setEnabled(False)
 
         self.setConnect(False)
@@ -156,11 +156,11 @@ class PortView(QDialog):
         #self.__portList.addItems(["COM1","COM2","COM3","COM4"])
 
     def __createUi(self):
-        self.__portList = QComboBox()
-        self.__message = QLabel("Port : ")
-        self.__okBt = QPushButton("OK")
+        self.__portList = QComboBox(self)
+        self.__message = QLabel("Port : ", self)
+        self.__okBt = QPushButton("OK", self)
         
-        self.__refreshBt = QPushButton("Refresh")
+        self.__refreshBt = QPushButton("Refresh", self)
         
         portLayout = QHBoxLayout()
         portLayout.addWidget(self.__message)
