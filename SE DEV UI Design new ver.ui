@@ -707,5 +707,69 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>ledSwitch</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>targetStat</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>32</x>
+     <y>52</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>58</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ledSwitch</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>currentStat</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>271</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ledSwitch</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>random_cb</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>30</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ledSwitch</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>chase_cb</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>43</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>30</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>
