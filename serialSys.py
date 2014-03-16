@@ -85,15 +85,22 @@ class SerialView(QtGui.QWidget):
     def __init__(self, parent=None):
         self.__parent = parent
         super(SerialView, self).__init__(self.__parent)
-
+        
+        self.__createComponents()
+        self.__setupComponents()
+        self.__layoutComponents()
+        
+    def __createComponents(self):
         self.__statusLabel = QtGui.QLabel("Arduino Status", self)
         self.__status = QtGui.QLabel(self)
         self.__connectBt = QtGui.QPushButton(self)
         self.__ledSwitch = QtGui.QRadioButton("Turn on LED", self)
+            
+    def __setupComponents(self):
         self.__ledSwitch.setEnabled(False)
-
         self.setConnect(False)
 
+    def __layoutComponents(self):
         stat = QtGui.QHBoxLayout()
         stat.addWidget(self.__statusLabel)
         stat.addWidget(self.__status)
@@ -104,7 +111,6 @@ class SerialView(QtGui.QWidget):
         mainLayout.addWidget(self.__ledSwitch)
 
         self.setLayout(mainLayout)
-        
         
     def getPort(self):
         
