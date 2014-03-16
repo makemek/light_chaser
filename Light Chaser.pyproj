@@ -27,7 +27,6 @@
     <Compile Include="serialSys.py" />
     <Compile Include="subjectObserver.py" />
     <Compile Include="testRun.py" />
-    <Compile Include="view.py" />
     <Compile Include="__main__.py" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
