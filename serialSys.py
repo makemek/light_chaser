@@ -1,11 +1,10 @@
 # Serial MVC
 
 from subjectObserver import *
-from PySide.QtGui import *
+import PySide.QtGui as QtGui
 
 import serial as PySerial
 from view import *
-import time
 import os
 
 class SerialController(Observer):
@@ -46,8 +45,8 @@ class SerialController(Observer):
     def sendByte(self, byte):
         self.__port.write(chr(byte).encode())
 
-    def notify(self, color : QColor):
-        color = QColor
+    def notify(self, color):
+        color = QtGui.QColor
         self.sendByte(color.red())
         self.sendByte(color.green())
         self.sendByte(color.blue())
@@ -60,7 +59,7 @@ class SerialController(Observer):
                 self.__isConnected = True
 
             except PySerial.serialutil.SerialException as e:
-                QMessageBox().critical(None, "Port initialization failed", e.args[0])
+                QtGui.QMessageBox().critical(None, "Port initialization failed", e.args[0])
 
             # cancel seclection -> invalid port name
             except ValueError:
@@ -73,7 +72,7 @@ class SerialController(Observer):
                 self.__view.setConnect(False)
 
             except PySerial.serialutil.SerialException as e:
-                QMessageBox().critical(None, "Port initialization failed", e.args[0])
+                QtGui.QMessageBox().critical(None, "Port initialization failed", e.args[0])
 
     def __toggleLED(self, isChecked):
         if not isChecked:
@@ -81,26 +80,26 @@ class SerialController(Observer):
             self.sendByte(0)
             self.sendByte(0)
 
-class SerialView(QWidget):
+class SerialView(QtGui.QWidget):
 
     def __init__(self, parent=None):
         self.__parent = parent
         super(SerialView, self).__init__(self.__parent)
 
-        self.__statusLabel = QLabel("Arduino Status", self)
-        self.__status = QLabel(self)
-        self.__connectBt = QPushButton(self)
-        self.__ledSwitch = QRadioButton("Turn on LED", self)
+        self.__statusLabel = QtGui.QLabel("Arduino Status", self)
+        self.__status = QtGui.QLabel(self)
+        self.__connectBt = QtGui.QPushButton(self)
+        self.__ledSwitch = QtGui.QRadioButton("Turn on LED", self)
         self.__ledSwitch.setEnabled(False)
 
         self.setConnect(False)
 
-        stat = QHBoxLayout()
+        stat = QtGui.QHBoxLayout()
         stat.addWidget(self.__statusLabel)
         stat.addWidget(self.__status)
         stat.addWidget(self.__connectBt)
 
-        mainLayout = QVBoxLayout()
+        mainLayout = QtGui.QVBoxLayout()
         mainLayout.addLayout(stat)
         mainLayout.addWidget(self.__ledSwitch)
 
@@ -139,7 +138,7 @@ class SerialView(QWidget):
         self.__ledSwitch.setEnabled(isEnable)
 
 
-class PortView(QDialog):
+class PortView(QtGui.QDialog):
     
     def __init__(self, parent=None):
         super(PortView, self).__init__(parent)
@@ -156,21 +155,21 @@ class PortView(QDialog):
         #self.__portList.addItems(["COM1","COM2","COM3","COM4"])
 
     def __createUi(self):
-        self.__portList = QComboBox(self)
-        self.__message = QLabel("Port : ", self)
-        self.__okBt = QPushButton("OK", self)
+        self.__portList = QtGui.QComboBox(self)
+        self.__message = QtGui.QLabel("Port : ", self)
+        self.__okBt = QtGui.QPushButton("OK", self)
         
-        self.__refreshBt = QPushButton("Refresh", self)
+        self.__refreshBt = QtGui.QPushButton("Refresh", self)
         
-        portLayout = QHBoxLayout()
+        portLayout = QtGui.QHBoxLayout()
         portLayout.addWidget(self.__message)
         portLayout.addWidget(self.__portList)
         
-        buttonLayout = QHBoxLayout()
+        buttonLayout = QtGui.QHBoxLayout()
         buttonLayout.addWidget(self.__okBt)
         buttonLayout.addWidget(self.__refreshBt)
         
-        mainLayout = QVBoxLayout()
+        mainLayout = QtGui.QVBoxLayout()
         mainLayout.addLayout(portLayout)
         mainLayout.addLayout(buttonLayout)
         
@@ -179,11 +178,11 @@ class PortView(QDialog):
     def __connectSignal(self):
         self.__refreshBt.clicked.connect(self.refreshPort)
         self.__portList.currentIndexChanged.connect(self.__setPort)
-        self.__okBt.clicked.connect(lambda: QDialog.reject(self))
+        self.__okBt.clicked.connect(lambda: QtGui.QDialog.reject(self))
 
     def reject(self):
         self.__portName = ""
-        QDialog.reject(self)
+        QtGui.QDialog.reject(self)
 
     def getPort(self):
         return self.__portName

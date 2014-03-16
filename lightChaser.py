@@ -1,14 +1,12 @@
-from PySide.QtGui import *
-from PySide.QtUiTools import *
-
+import PySide.QtGui as QtGui
 from serialSys import *
 
-class LightChaser(QWidget):
+class LightChaser(QtGui.QWidget):
    
     def __init__(self, parent=None):
-        QWidget.__init__(self, parent)
+        QtGui.QWidget.__init__(self, parent)
 
-        self.__mainLayout = QVBoxLayout()
+        self.__mainLayout = QtGui.QVBoxLayout()
         self.setLayout(self.__mainLayout)
 
         self.__setupSerialSys()
