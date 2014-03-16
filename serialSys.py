@@ -2,6 +2,7 @@
 
 from subjectObserver import *
 import PySide.QtGui as QtGui
+import LED as led
 
 import serial as PySerial
 import os
@@ -11,6 +12,7 @@ class SerialController(Observer):
     def __init__(self, serialModel, view):
         self.__view = view
         self.__model = serialModel
+        self.__led = led.Rgb_Led()
 
         self.__view.setConnectButtonListener(self.bridgeConnection)
         self.__view.setLEDListener(self.__toggleLED)
@@ -19,6 +21,8 @@ class SerialController(Observer):
         
     def notify(self, color):
         color = QtGui.QColor
+        self.__led.storeState(color.toRgb())
+
         self.__model.sendByte(color.red())
         self.__model.sendByte(color.green())
         self.__model.sendByte(color.blue())
@@ -28,6 +32,12 @@ class SerialController(Observer):
             self.__model.sendByte(0)
             self.__model.sendByte(0)
             self.__model.sendByte(0)
+
+        elif isChecked and self.__isConnected:
+            rgb = self.__led.retrieveLastState()
+            self.__model.sendByte(rgb & 0xFF0000 >> 16) # red
+            self.__model.sendByte(rgb & 0x00FF00 >> 8) # green
+            self.__model.sendByte(rgb & 0x0000FF) #blue
 
     def bridgeConnection(self):
         if not self.__isConnected:
@@ -126,6 +136,7 @@ class SerialView(QtGui.QWidget):
     def setConnect(self, isConnect):
         connectMsg = "Connected"
         disconnectMsg = "Not Connected"
+
         if isConnect:
             self.__status.setText(connectMsg)
             self.__connectBt.setText("Disconnect")

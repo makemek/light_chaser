@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="colorSys.py" />
+    <Compile Include="LED.py" />
     <Compile Include="lightChaser.py" />
     <Compile Include="serialSys.py" />
     <Compile Include="subjectObserver.py" />
