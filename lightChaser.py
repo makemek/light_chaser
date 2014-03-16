@@ -1,6 +1,9 @@
 import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
+
 from serialSys import *
 from colorSys import *
+from effectSys import *
 
 class LightChaser(QtGui.QWidget):
    
@@ -12,6 +15,7 @@ class LightChaser(QtGui.QWidget):
 
         self.__setupSerialSys()
         self.__setupColorSys()
+        self.__seperator()
         self.__setupEffectSys()
 
     def __setupSerialSys(self):
@@ -27,14 +31,20 @@ class LightChaser(QtGui.QWidget):
         targetStat = ColorView("Target", self)
         currentStat = ColorView("Current", self)
 
-        self.__colorController = ColorController(targetStat, currentStat)
+        #self.__colorController = ColorController(targetStat, currentStat)
 
         self.__mainLayout.addWidget(targetStat)
         self.__mainLayout.addWidget(currentStat)
 
 
     def __setupEffectSys(self):
-        pass
+        effectView = EffectView(self)
+        self.__mainLayout.addWidget(effectView)
 
+    def __seperator(self):
+        line = QtGui.QFrame(self)
+        line.setFrameShape(QtGui.QFrame.HLine)
+        line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.__mainLayout.addWidget(line) 
 
         
