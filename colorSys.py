@@ -1,5 +1,25 @@
 import PySide.QtGui as gui
 import PySide.QtCore as QtCore
+from subjectObserver import Subject
+
+class ColorController(Subject):
+
+    def __init__(self, targetView, currentView):
+        self.__targetView = targetView
+        self.__currentView = currentView
+
+        #self.__currentView.setVisible(False)
+
+        self.__obs = []
+
+    def addObserver(self, obs):
+        self.__obs.append(obs)
+
+    def removeObserver(self, obs):
+        self.__obs.remove(obs)
+
+    def notifyObserver(self):
+        return super().notifyObserver()
 
 class ColorView(gui.QWidget):
 
@@ -8,6 +28,7 @@ class ColorView(gui.QWidget):
         self.__createComponents(name)
         self.__setupComponents()
         self.__layoutComponents()
+        self.__connectSignal()
 
     def __createComponents(self, name):
         # Labels
@@ -19,10 +40,9 @@ class ColorView(gui.QWidget):
         self.__blue = ColorAdjuster("BLUE", self)
 
         # Color display
-        self.__display = gui.QFrame(self)
+        self.__display = ColorDisplay(parent=self)
 
     def __setupComponents(self):
-        self.__display.setStyleSheet("QFrame { background-color: %s; }" % "green")
         self.__display.setMinimumSize(60,60)
         
     def __layoutComponents(self):
@@ -35,6 +55,19 @@ class ColorView(gui.QWidget):
 
         self.setLayout(mainLayout)
         
+    def __connectSignal(self):
+        self.__red.connect(self.__colorChanged)
+        self.__green.connect(self.__colorChanged)
+        self.__blue.connect(self.__colorChanged)
+
+    def __colorChanged(self, dummyVar):
+        self.__display.setColor(self.getColorAsRGB())
+
+    def getColorAsRGB(self):
+        rgb = self.getBlue()
+        rgb |= self.getGreen() << 8
+        rgb |= self.getRed() << 16
+        return rgb
 
     def getRed(self):
         return self.__red.getValue()
@@ -72,6 +105,10 @@ class ColorAdjuster(gui.QWidget):
         self.__spinBox.valueChanged.connect(self.__slider.setValue)
         self.__slider.valueChanged.connect(self.__spinBox.setValue)
 
+    def connect(self, func):
+        self.__spinBox.valueChanged.connect(func)
+        self.__slider.valueChanged.connect(func)
+
     def __layoutComponents(self):
         mainLayout = gui.QVBoxLayout()
         formLayout = gui.QFormLayout()
@@ -84,3 +121,14 @@ class ColorAdjuster(gui.QWidget):
 
     def getValue(self):
         return self.__slider.value()
+
+class ColorDisplay(gui.QFrame):
+
+    def __init__(self, initialColor=0, parent=None):
+        super(ColorDisplay, self).__init__(parent)
+
+        self.__styleSheet = "QFrame { background-color: #%s; }"
+        self.setColor(initialColor)
+
+    def setColor(self, rgbVal):
+        self.setStyleSheet(self.__styleSheet % hex(rgbVal)[2:].zfill(6))
