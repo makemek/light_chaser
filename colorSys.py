@@ -22,7 +22,7 @@ class ColorView(gui.QWidget):
         self.__display = gui.QFrame(self)
 
     def __setupComponents(self):
-        self.__display.setStyleSheet("QWidget { background-color: %s; }" % "green")
+        self.__display.setStyleSheet("QFrame { background-color: %s; }" % "green")
         self.__display.setMinimumSize(60,60)
         
     def __layoutComponents(self):

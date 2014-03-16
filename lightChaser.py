@@ -1,5 +1,6 @@
 import PySide.QtGui as QtGui
 from serialSys import *
+from colorSys import *
 
 class LightChaser(QtGui.QWidget):
    
@@ -10,7 +11,8 @@ class LightChaser(QtGui.QWidget):
         self.setLayout(self.__mainLayout)
 
         self.__setupSerialSys()
-        
+        self.__setupColorSys()
+        self.__setupEffectSys()
 
     def __setupSerialSys(self):
         # Call Serial MVC
@@ -20,7 +22,12 @@ class LightChaser(QtGui.QWidget):
         
          
     def __setupColorSys(self):
-        pass
+        self.__targetStat = ColorView("Target", self)
+        self.__currentStat = ColorView("Current", self)
+
+        self.__mainLayout.addWidget(self.__targetStat)
+        self.__mainLayout.addWidget(self.__currentStat)
+
 
     def __setupEffectSys(self):
         pass
