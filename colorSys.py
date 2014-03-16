@@ -6,18 +6,35 @@ class ColorView(gui.QWidget):
     def __init__(self, name, parent=None):
         super(ColorView, self).__init__(parent)
         self.__createComponents(name)
+        self.__setupComponents()
+        self.__layoutComponents()
 
     def __createComponents(self, name):
         # Labels
         self.__headerLbl = gui.QLabel(name, self)
-        self.__redLbl = gui.QLabel("RED", self)
-        self.__greenLbl = gui.QLabel("GREEN", self)
-        self.__blueLbl = gui.QLabel("BLUE", self)
+        
+        # Spinboxes & Slider
+        self.__red = ColorAdjuster("RED", self)
+        self.__green = ColorAdjuster("GREEN", self)
+        self.__blue = ColorAdjuster("BLUE", self)
 
-        # Spinboxes
-        self.__red = ColorAdjuster(self)
-        self.__green = ColorAdjuster(self)
-        self.__blue = ColorAdjuster(self)
+        # Color display
+        self.__display = gui.QFrame(self)
+
+    def __setupComponents(self):
+        self.__display.setStyleSheet("QWidget { background-color: %s; }" % "green")
+        self.__display.setMinimumSize(60,60)
+        
+    def __layoutComponents(self):
+        mainLayout = gui.QHBoxLayout()
+        mainLayout.addWidget(self.__headerLbl)
+        mainLayout.addWidget(self.__red)
+        mainLayout.addWidget(self.__green)
+        mainLayout.addWidget(self.__blue)
+        mainLayout.addWidget(self.__display)
+
+        self.setLayout(mainLayout)
+        
 
     def getRed(self):
         return self.__red.getValue()
