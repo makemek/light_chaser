@@ -20,24 +20,21 @@ class SerialController(Observer):
         self.__isConnected = False
         
     def notify(self, color):
-        color = QtGui.QColor
-        self.__led.storeState(color.toRgb())
-
         self.__model.sendByte(color.red())
         self.__model.sendByte(color.green())
         self.__model.sendByte(color.blue())
 
     def __toggleLED(self, isChecked):
+        # turn off
         if not isChecked and self.__isConnected:
             self.__model.sendByte(0)
             self.__model.sendByte(0)
             self.__model.sendByte(0)
 
+        # turn on
         elif isChecked and self.__isConnected:
             rgb = self.__led.retrieveLastState()
-            self.__model.sendByte(rgb & 0xFF0000 >> 16) # red
-            self.__model.sendByte(rgb & 0x00FF00 >> 8) # green
-            self.__model.sendByte(rgb & 0x0000FF) #blue
+            self.notify(rgb)
 
     def bridgeConnection(self):
         if not self.__isConnected:
