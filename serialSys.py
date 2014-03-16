@@ -4,57 +4,36 @@ from subjectObserver import *
 import PySide.QtGui as QtGui
 
 import serial as PySerial
-from view import *
 import os
 
 class SerialController(Observer):
     
-    def __init__(self, view):
-        self.__port = PySerial.Serial()
+    def __init__(self, serialModel, view):
         self.__view = view
-        self.__view.setConnectButtonListener(self.__bridgeConnection)
-        #self.__view.setLEDListener(self.__toggleLED)
-        
+        self.__model = serialModel
+
+        self.__view.setConnectButtonListener(self.bridgeConnection)
+        self.__view.setLEDListener(self.__toggleLED)
+
         self.__isConnected = False
-
-    def openPort(self):
-        print("Open port")
-        comName = self.__view.getPort()
-        print(comName)
-
-        if comName == "":
-            raise ValueError
-
-        self.__port.setPort(comName)
-        self.__port.setBaudrate(9600)
-        self.__port.setTimeout(2)
-        self.__port.open()
-            
-
-    def closePort(self):
-        print("Close Port")
-        try:
-            self.sendByte(0)
-            self.sendByte(0)
-            self.sendByte(0)
-        except:
-            pass
-        self.__port.close()
         
-
-    def sendByte(self, byte):
-        self.__port.write(chr(byte).encode())
-
     def notify(self, color):
         color = QtGui.QColor
-        self.sendByte(color.red())
-        self.sendByte(color.green())
-        self.sendByte(color.blue())
+        self.__model.sendByte(color.red())
+        self.__model.sendByte(color.green())
+        self.__model.sendByte(color.blue())
 
-    def __bridgeConnection(self):
+    def __toggleLED(self, isChecked):
+        if not isChecked and self.__isConnected:
+            self.__model.sendByte(0)
+            self.__model.sendByte(0)
+            self.__model.sendByte(0)
+
+    def bridgeConnection(self):
         if not self.__isConnected:
             try:
-                self.openPort()
+                portName = self.__view.getPort()
+                self.__model.openPort(portName)
                 self.__view.setConnect(True)
                 self.__isConnected = True
 
@@ -67,18 +46,40 @@ class SerialController(Observer):
                
         else:
             try:
-                self.closePort()
+                self.__model.closePort()
                 self.__isConnected = False
                 self.__view.setConnect(False)
 
             except PySerial.serialutil.SerialException as e:
-                QtGui.QMessageBox().critical(None, "Port initialization failed", e.args[0])
+                QtGui.QMessageBox().critical(None, "Port terminaltion failed", e.args[0])
 
-    def __toggleLED(self, isChecked):
-        if not isChecked:
+class SerialPort:
+    def __init__(self):
+        self.__port = PySerial.Serial()
+        
+    def openPort(self, portName):
+        print("Open port")
+
+        if portName == "":
+            raise ValueError
+
+        self.__port.setPort(portName)
+        self.__port.setBaudrate(9600)
+        self.__port.setTimeout(2)
+        self.__port.open()
+            
+    def closePort(self):
+        print("Close Port")
+        try:
             self.sendByte(0)
             self.sendByte(0)
             self.sendByte(0)
+            self.__port.close()
+        except:
+            pass
+        
+    def sendByte(self, byte):
+        self.__port.write(chr(byte).encode())
 
 class SerialView(QtGui.QWidget):
 

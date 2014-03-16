@@ -17,16 +17,20 @@ class LightChaser(QtGui.QWidget):
     def __setupSerialSys(self):
         # Call Serial MVC
         serialView = SerialView()
-        self.__serialController = SerialController(serialView)
+        serialModel = SerialPort()
+        self.__serialController = SerialController(serialModel, serialView)
         self.__mainLayout.addWidget(serialView)
         
          
     def __setupColorSys(self):
-        self.__targetStat = ColorView("Target", self)
-        self.__currentStat = ColorView("Current", self)
 
-        self.__mainLayout.addWidget(self.__targetStat)
-        self.__mainLayout.addWidget(self.__currentStat)
+        targetStat = ColorView("Target", self)
+        currentStat = ColorView("Current", self)
+
+        self.__colorController = ColorController(targetStat, currentStat)
+
+        self.__mainLayout.addWidget(targetStat)
+        self.__mainLayout.addWidget(currentStat)
 
 
     def __setupEffectSys(self):
