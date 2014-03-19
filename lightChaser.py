@@ -21,8 +21,8 @@ class LightChaser(QtGui.QWidget):
     def __setupSerialSys(self):
         # Call Serial MVC
         serialView = SerialView()
-        serialModel = SerialPort()
-        self.__serialController = SerialController(serialModel, serialView)
+        self.__serialModel = SerialPort()
+        self.__serialController = SerialController(self.__serialModel, serialView)
         self.__mainLayout.addWidget(serialView)
         
          
@@ -46,5 +46,9 @@ class LightChaser(QtGui.QWidget):
         line.setFrameShape(QtGui.QFrame.HLine)
         line.setFrameShadow(QtGui.QFrame.Sunken)
         self.__mainLayout.addWidget(line) 
+
+    def closeEvent(self, event):
+        self.__serialModel.closePort()
+        super(LightChaser, self).closeEvent(event)
 
         
