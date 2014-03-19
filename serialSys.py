@@ -142,6 +142,7 @@ class SerialView(QtGui.QWidget):
             self.__connectBt.setText("Connect")
 
         self.__ledSwitch.setEnabled(isConnect)
+        self.__ledSwitch.setChecked(isConnect)
        
     def setConnectButtonListener(self, func):
         self.__connectBt.clicked.connect(func)
