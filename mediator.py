@@ -5,7 +5,11 @@ from effectSys import EffectView
 class Mediator:
     
     def __init__(self):
-        pass
+        # These are type for auto complete only
+        self.__serialView = SerialView
+        self.__targetView = ColorView
+        self.__currentView = ColorView
+        self.__effectView = EffectView
 
     def registerSerialView(self, view):
         pass
