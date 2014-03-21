@@ -16,11 +16,9 @@ class Mediator:
 
     def registerTargetColorView(self, view):
         self.__targetView = view
-        self.__targetView.setVisible(False)
 
     def registerCurrentColorView(self, view):
         self.__currentView = view
-        self.__currentView.setVisible(True)
 
     def registerEffectView(self, view):
         self.__effectView = view
