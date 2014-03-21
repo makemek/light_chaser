@@ -11,25 +11,30 @@ class SerialController(Observer):
     
     def __init__(self, serialModel, view):
         self.__view = view
-        self.__model = serialModel
+        self.__port = serialModel
         self.__led = led.Rgb_Led()
 
         self.__view.setConnectButtonListener(self.bridgeConnection)
         self.__view.setLEDListener(self.__toggleLED)
 
-        self.__isConnected = False
+        self.__isConnected = self.__port.isOpen()
+        self.__view.setConnect(self.__port.isOpen())
         
     def notify(self, color):
-        self.__model.sendByte(color.red())
-        self.__model.sendByte(color.green())
-        self.__model.sendByte(color.blue())
+        try:
+            self.__port.sendByte(color.red())
+            self.__port.sendByte(color.green())
+            self.__port.sendByte(color.blue())
+        except: # unplugged
+            self.__led.default()
+            self.__view.setConnect(False)
+            if self.__port.isOpen():
+                self.__port.closePort()
 
     def __toggleLED(self, isChecked):
         # turn off
         if not isChecked and self.__isConnected:
-            self.__model.sendByte(0)
-            self.__model.sendByte(0)
-            self.__model.sendByte(0)
+            self.notify(QtGui.QColor(0))
 
         # turn on
         elif isChecked and self.__isConnected:
@@ -40,7 +45,7 @@ class SerialController(Observer):
         if not self.__isConnected:
             try:
                 portName = self.__view.getPort()
-                self.__model.openPort(portName)
+                self.__port.openPort(portName)
                 self.__view.setConnect(True)
                 self.__isConnected = True
 
@@ -53,9 +58,9 @@ class SerialController(Observer):
                
         else:
             try:
-                self.__model.closePort()
-                self.__isConnected = False
+                self.__port.closePort()
                 self.__view.setConnect(False)
+                self.__isConnected = False
 
             except PySerial.serialutil.SerialException as e:
                 QtGui.QMessageBox().critical(None, "Port terminaltion failed", e.args[0])
@@ -87,6 +92,9 @@ class SerialPort:
         
     def sendByte(self, byte):
         self.__port.write(chr(byte).encode())
+
+    def isOpen(self):
+        return self.__port.isOpen()
 
 class SerialView(QtGui.QWidget):
 

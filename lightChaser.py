@@ -30,8 +30,9 @@ class LightChaser(QtGui.QWidget):
 
         targetStat = ColorView("Target", self)
         currentStat = ColorView("Current", self)
+        currentStat.addObserver(self.__serialController)
 
-        #self.__colorController = ColorController(targetStat, currentStat)
+        self.__colorController = ColorController(targetStat, currentStat)
 
         self.__mainLayout.addWidget(targetStat)
         self.__mainLayout.addWidget(currentStat)

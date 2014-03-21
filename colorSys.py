@@ -2,26 +2,21 @@ import PySide.QtGui as gui
 import PySide.QtCore as QtCore
 from subjectObserver import Subject
 
-class ColorController(Subject):
+# may use mediator design pattern instead
+
+class ColorController():
 
     def __init__(self, targetView, currentView):
         self.__targetView = targetView
         self.__currentView = currentView
 
-        #self.__currentView.setVisible(False)
+        self.__targetView.setVisible(False) # let effectSys manage
 
-        self.__obs = []
+        
 
-    def addObserver(self, obs):
-        self.__obs.append(obs)
 
-    def removeObserver(self, obs):
-        self.__obs.remove(obs)
 
-    def notifyObserver(self):
-        return super().notifyObserver()
-
-class ColorView(gui.QWidget):
+class ColorView(gui.QWidget, Subject):
 
     def __init__(self, name, parent=None):
         super(ColorView, self).__init__(parent)
@@ -29,6 +24,9 @@ class ColorView(gui.QWidget):
         self.__setupComponents()
         self.__layoutComponents()
         self.__connectSignal()
+
+        self.__obs = []
+        self.actionPerformed(self.notifyObserver)
 
     def __createComponents(self, name):
         # Labels
@@ -62,6 +60,7 @@ class ColorView(gui.QWidget):
 
     def __colorChanged(self, dummyVar):
         self.__display.setColor(self.getColorAsRGB())
+        self.notifyObserver()
 
     def getColorAsRGB(self):
         rgb = self.getBlue()
@@ -77,6 +76,22 @@ class ColorView(gui.QWidget):
 
     def getBlue(self):
         return self.__blue.getValue()
+
+    def actionPerformed(self, method):
+        self.__red.connect(method)
+        self.__green.connect(method)
+        self.__blue.connect(method)
+
+    def addObserver(self, obs):
+        self.__obs.append(obs)
+
+    def removeObserver(self, obs):
+        self.__obs.remove(obs)
+
+    def notifyObserver(self):
+        color = gui.QColor(self.getColorAsRGB())
+        for o in self.__obs:
+            o.notify(color)
         
 class ColorAdjuster(gui.QWidget):
 

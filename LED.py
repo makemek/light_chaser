@@ -9,3 +9,6 @@ class Rgb_Led:
 
     def retrieveLastState(self):
         return self.__rgbVal
+
+    def default(self):
+        self.__rgbVal = QtGui.QColor(0)
