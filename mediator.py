@@ -25,8 +25,10 @@ class Mediator:
     def registerEffectView(self, view):
         self.__effectView = view
 
-    def serialReady(self):
-        pass
+    def serialReady(self, isReady):
+        self.__targetView.setEnabled(isReady)
+        self.__currentView.setEnabled(isReady)
+        self.__effectView.setEnabled(isReady)
 
     def colorChanged(self):
         pass
