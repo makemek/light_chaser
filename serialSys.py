@@ -22,9 +22,7 @@ class SerialController(Observer):
         
     def notify(self, color):
         try:
-            self.__port.sendByte(color.red())
-            self.__port.sendByte(color.green())
-            self.__port.sendByte(color.blue())
+            self.__port.sendByte(color,3)
         except: # unplugged
             self.__led.default()
             self.__view.setConnect(False)
@@ -34,7 +32,7 @@ class SerialController(Observer):
     def __toggleLED(self, isChecked):
         # turn off
         if not isChecked and self.__isConnected:
-            self.notify(QtGui.QColor(0))
+            self.notify(0)
 
         # turn on
         elif isChecked and self.__isConnected:
@@ -83,15 +81,13 @@ class SerialPort:
     def closePort(self):
         print("Close Port")
         try:
-            self.sendByte(0)
-            self.sendByte(0)
-            self.sendByte(0)
+            self.sendByte(0,3)
             self.__port.close()
         except:
             pass
         
-    def sendByte(self, byte):
-        byte = byte.to_bytes(1, byteorder='big')
+    def sendByte(self, byte, amount, _byteorder='big'):
+        byte = byte.to_bytes(amount, byteorder=_byteorder)
         self.__port.write(byte)
 
     def isOpen(self):
