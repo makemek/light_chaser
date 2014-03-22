@@ -106,6 +106,7 @@ class SerialView(QtGui.QWidget):
         
         self.__createComponents()
         self.__layoutComponents()
+        self.__connectSignal()
         
     def __createComponents(self):
         self.__statusLabel = QtGui.QLabel("Arduino Status", self)
@@ -125,6 +126,9 @@ class SerialView(QtGui.QWidget):
 
         self.setLayout(mainLayout)
         
+    def __connectSignal(self):
+        self.setLEDListener(self.__mediator.serialReady)
+
     def getPort(self):
         
         print("getPort()")
