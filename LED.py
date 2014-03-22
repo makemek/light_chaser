@@ -1,7 +1,7 @@
 import PySide.QtGui as QtGui
 class Rgb_Led:
     
-    def __init__(self, rgbVal=QtGui.QColor(0)):
+    def __init__(self, rgbVal=0):
         self.__rgbVal = rgbVal
 
     def storeState(self, rgbVal):
@@ -11,4 +11,4 @@ class Rgb_Led:
         return self.__rgbVal
 
     def default(self):
-        self.__rgbVal = QtGui.QColor(0)
+        self.__rgbVal = 0

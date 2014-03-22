@@ -27,7 +27,7 @@ class ColorView(gui.QWidget, Subject):
         self.__connectSignal()
 
         self.__obs = []
-        self.actionPerformed(self.notifyObserver)
+        #self.actionPerformed(self.notifyObserver)
 
     def __createComponents(self, name):
         # Labels
@@ -60,6 +60,7 @@ class ColorView(gui.QWidget, Subject):
         self.__blue.connect(self.__colorChanged)
 
     def __colorChanged(self, dummyVar):
+        print("Color chnage: %d" % dummyVar)
         self.__display.setColor(self.getColorAsRGB())
         self.notifyObserver()
 
@@ -95,7 +96,7 @@ class ColorView(gui.QWidget, Subject):
         self.__obs.remove(obs)
 
     def notifyObserver(self):
-        color = gui.QColor(self.getColorAsRGB())
+        color = self.getColorAsRGB()
         for o in self.__obs:
             o.notify(color)
         
@@ -128,7 +129,7 @@ class ColorAdjuster(gui.QWidget):
 
     def connect(self, func):
         self.__spinBox.valueChanged.connect(func)
-        self.__slider.valueChanged.connect(func)
+        #self.__slider.valueChanged.connect(func) # signal conflict (send multiple times) because set both value change cause signal to send both
 
     def __layoutComponents(self):
         mainLayout = gui.QVBoxLayout()
