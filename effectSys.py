@@ -1,4 +1,5 @@
 import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 import random
 
 class EffectView(QtGui.QWidget):
@@ -23,7 +24,8 @@ class EffectView(QtGui.QWidget):
         self.__speedSb.setEnabled(False)
 
     def __connectSignal(self):
-        self.__randomizeCb.stateChanged.connect(self.__speedSb.setEnabled)
+        self.__randomizeCb.toggled.connect(self.__speedSb.setEnabled)
+        self.__smoothTransCb.toggled.connect(self.__mediator.enableSmooth)
 
     def __layoutComponents(self):
         mainLayout = QtGui.QVBoxLayout()
@@ -53,8 +55,6 @@ class EffectView(QtGui.QWidget):
 class RgbVariator:
     
     def __init__(self, target=QtGui.QColor(0)):
-        self.__timer
-
         self.__target = target
         self.__current = QtGui.QColor(0)
 
