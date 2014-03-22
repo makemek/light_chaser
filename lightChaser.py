@@ -17,41 +17,42 @@ class LightChaser(QtGui.QWidget):
 
         self.__communicationSys = Mediator()
 
+        self.__createView()
         self.__setupSerialSys()
         self.__setupColorSys()
         self.__seperator()
         self.__setupEffectSys()
 
-     
+    def __createView(self):
+        self.__serialView = SerialView(self, self.__communicationSys)
+        self.__targetStat = ColorView("Target", self, self.__communicationSys)
+        self.__currentStat = ColorView("Current", self, self.__communicationSys)
+        self.__effectView = EffectView(self, self.__communicationSys)
 
     def __setupSerialSys(self):
         # Call Serial MVC
-        serialView = SerialView(self, self.__communicationSys)
         self.__serialModel = SerialPort()
-        self.__serialController = SerialController(self.__serialModel, serialView)
-        self.__mainLayout.addWidget(serialView)
+        self.__serialController = SerialController(self.__serialModel, self.__serialView)
+        self.__mainLayout.addWidget(self.__serialView)
         
-        self.__communicationSys.registerSerialView(serialView)
+        self.__communicationSys.registerSerialView(self.__serialView)
          
     def __setupColorSys(self):
 
-        targetStat = ColorView("Target", self, self.__communicationSys)
-        currentStat = ColorView("Current", self, self.__communicationSys)
         currentStat.addObserver(self.__serialController)
 
-        self.__colorController = ColorController(targetStat, currentStat)
+        self.__colorController = ColorController(self.__targetStat, self.__currentStat)
 
-        self.__mainLayout.addWidget(targetStat)
-        self.__mainLayout.addWidget(currentStat)
+        self.__mainLayout.addWidget(self.__targetStat)
+        self.__mainLayout.addWidget(self.__currentStat)
 
-        self.__communicationSys.registerCurrentColorView(currentStat)
-        self.__communicationSys.registerTargetColorView(targetStat)
+        self.__communicationSys.registerCurrentColorView(self.__currentStat)
+        self.__communicationSys.registerTargetColorView(self.__targetStat)
 
     def __setupEffectSys(self):
-        effectView = EffectView(self, self.__communicationSys)
-        self.__mainLayout.addWidget(effectView)
+        self.__mainLayout.addWidget(self.__effectView)
 
-        self.__communicationSys.registerEffectView(effectView)
+        self.__communicationSys.registerEffectView(self.__effectView)
 
     def __seperator(self):
         line = QtGui.QFrame(self)
