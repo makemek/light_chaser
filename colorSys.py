@@ -62,6 +62,11 @@ class ColorView(gui.QWidget, Subject):
         self.__display.setColor(self.getColorAsRGB())
         self.notifyObserver()
 
+    def setColor(self, color):
+        self.__red.setValue(color.red())
+        self.__green.setValue(color.green())
+        self.__blue.setValue(color.blue())
+
     def getColorAsRGB(self):
         rgb = self.getBlue()
         rgb |= self.getGreen() << 8
@@ -133,6 +138,10 @@ class ColorAdjuster(gui.QWidget):
         mainLayout.addWidget(self.__slider)
 
         self.setLayout(mainLayout)
+
+    def setValue(self, val):
+        self.__spinBox.setValue(val)
+        self.__slider.setValue(val)
 
     def getValue(self):
         return self.__slider.value()
