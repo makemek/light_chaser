@@ -59,6 +59,8 @@ class ColorView(gui.QWidget, Subject):
         self.__green.connect(self.__colorChanged)
         self.__blue.connect(self.__colorChanged)
 
+        self.__display.connectColorDialogAcceptedEvent(self.setColor)
+
     def __colorChanged(self, dummyVar):
         print("Color chnage: %d" % dummyVar)
         self.__display.setColor(self.getColorAsRGB())
@@ -158,7 +160,6 @@ class ColorDisplay(gui.QFrame):
         super(ColorDisplay, self).__init__(parent)
 
         self.__colorDialog = gui.QColorDialog()
-        self.__colorDialog.colorSelected.connect(self.setColor)
 
         self.__styleSheet = "QFrame { background-color: #%s; }"
         self.setColor(initialColor)
@@ -178,7 +179,7 @@ class ColorDisplay(gui.QFrame):
             self.__colorDialog.activateWindow()
             self.__colorDialog.exec_()
 
-    def colorDialogAcceptedEvent(self, method):
+    def connectColorDialogAcceptedEvent(self, method):
         self.__colorDialog.colorSelected.connect(method)
         
         
