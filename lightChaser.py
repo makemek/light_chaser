@@ -26,7 +26,7 @@ class LightChaser(QtGui.QWidget):
 
     def __setupSerialSys(self):
         # Call Serial MVC
-        serialView = SerialView()
+        serialView = SerialView(self, self.__communicationSys)
         self.__serialModel = SerialPort()
         self.__serialController = SerialController(self.__serialModel, serialView)
         self.__mainLayout.addWidget(serialView)
@@ -35,8 +35,8 @@ class LightChaser(QtGui.QWidget):
          
     def __setupColorSys(self):
 
-        targetStat = ColorView("Target", self)
-        currentStat = ColorView("Current", self)
+        targetStat = ColorView("Target", self, self.__communicationSys)
+        currentStat = ColorView("Current", self, self.__communicationSys)
         currentStat.addObserver(self.__serialController)
 
         self.__colorController = ColorController(targetStat, currentStat)
@@ -48,7 +48,7 @@ class LightChaser(QtGui.QWidget):
         self.__communicationSys.registerTargetColorView(targetStat)
 
     def __setupEffectSys(self):
-        effectView = EffectView(self)
+        effectView = EffectView(self, self.__communicationSys)
         self.__mainLayout.addWidget(effectView)
 
         self.__communicationSys.registerEffectView(effectView)
