@@ -98,8 +98,10 @@ class SerialPort:
 
 class SerialView(QtGui.QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, mediator=None):
         self.__parent = parent
+        self.__mediator = mediator
+
         super(SerialView, self).__init__(self.__parent)
         
         self.__createComponents()

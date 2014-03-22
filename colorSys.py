@@ -18,7 +18,8 @@ class ColorController():
 
 class ColorView(gui.QWidget, Subject):
 
-    def __init__(self, name, parent=None):
+    def __init__(self, name, parent=None, mediator=None):
+        self.__mediator= mediator
         super(ColorView, self).__init__(parent)
         self.__createComponents(name)
         self.__setupComponents()
