@@ -18,7 +18,8 @@ class ColorController():
 
 class ColorView(gui.QWidget, Subject):
 
-    def __init__(self, name, parent=None):
+    def __init__(self, name, parent=None, mediator=None):
+        self.__mediator= mediator
         super(ColorView, self).__init__(parent)
         self.__createComponents(name)
         self.__setupComponents()
@@ -61,6 +62,11 @@ class ColorView(gui.QWidget, Subject):
     def __colorChanged(self, dummyVar):
         self.__display.setColor(self.getColorAsRGB())
         self.notifyObserver()
+
+    def setColor(self, color):
+        self.__red.setValue(color.red())
+        self.__green.setValue(color.green())
+        self.__blue.setValue(color.blue())
 
     def getColorAsRGB(self):
         rgb = self.getBlue()
@@ -133,6 +139,10 @@ class ColorAdjuster(gui.QWidget):
         mainLayout.addWidget(self.__slider)
 
         self.setLayout(mainLayout)
+
+    def setValue(self, val):
+        self.__spinBox.setValue(val)
+        self.__slider.setValue(val)
 
     def getValue(self):
         return self.__slider.value()

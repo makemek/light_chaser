@@ -3,7 +3,8 @@ import random
 
 class EffectView(QtGui.QWidget):
     
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, mediator=None):
+        self.__mediator = mediator
         super(EffectView, self).__init__(parent)
         self.__createComponents()
         self.__setupComponents()
