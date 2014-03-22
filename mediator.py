@@ -34,8 +34,5 @@ class Mediator:
     def changeTargetColorView(self, color):
         self.__targetView.setColor(color)
 
-    def enableRandomize(self, isEnable):
-        self.__targetView.setVisible(isEnable)
-
     def enableSmooth(self, isEnable):
         self.__targetView.setVisible(isEnable)
