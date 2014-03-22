@@ -12,14 +12,11 @@ class LightChaser(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
 
-        self.__mainLayout = QtGui.QVBoxLayout()
-        self.setLayout(self.__mainLayout)
-
         self.__createView()
         self.__setupSerialSys()
         self.__setupColorSys()
-        self.__seperator()
         self.__setupEffectSys()
+        self.__layoutComponents()
 
     def __createView(self):
         communicationSys = Mediator()
@@ -37,27 +34,26 @@ class LightChaser(QtGui.QWidget):
         mediator.registerTargetColorView(self.__targetStat)
         mediator.registerEffectView(self.__effectView)
 
-
     def __setupSerialSys(self):
-        # Call Serial MVC
         self.__serialModel = SerialPort()
         self.__serialController = SerialController(self.__serialModel, self.__serialView)
-        self.__mainLayout.addWidget(self.__serialView)
-        
-         
+
     def __setupColorSys(self):
-
         self.__currentStat.addObserver(self.__serialController)
-
-        self.__colorController = ColorController(self.__targetStat, self.__currentStat)
-
-        self.__mainLayout.addWidget(self.__targetStat)
-        self.__mainLayout.addWidget(self.__currentStat)
-
+        #self.__colorController = ColorController(self.__targetStat, self.__currentStat)
 
     def __setupEffectSys(self):
-        self.__mainLayout.addWidget(self.__effectView)
+        pass
 
+    def __layoutComponents(self):
+        self.__mainLayout = QtGui.QVBoxLayout()
+        self.setLayout(self.__mainLayout)
+
+        self.__mainLayout.addWidget(self.__serialView)
+        self.__mainLayout.addWidget(self.__targetStat)
+        self.__mainLayout.addWidget(self.__currentStat)
+        self.__seperator()
+        self.__mainLayout.addWidget(self.__effectView)
 
     def __seperator(self):
         line = QtGui.QFrame(self)
