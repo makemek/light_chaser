@@ -99,6 +99,10 @@ class ColorView(gui.QWidget, Subject):
         color = self.getColorAsRGB()
         for o in self.__obs:
             o.notify(color)
+
+    def setEnabled(self, isEnable):
+        self.__display.setEnabled(isEnable)
+        super(ColorView, self).setEnabled(isEnable)
         
 class ColorAdjuster(gui.QWidget):
 
