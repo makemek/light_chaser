@@ -157,8 +157,28 @@ class ColorDisplay(gui.QFrame):
     def __init__(self, initialColor=0, parent=None):
         super(ColorDisplay, self).__init__(parent)
 
+        self.__colorDialog = gui.QColorDialog()
+        self.__colorDialog.colorSelected.connect(self.setColor)
+
         self.__styleSheet = "QFrame { background-color: #%s; }"
         self.setColor(initialColor)
 
     def setColor(self, rgbVal):
+        if type(rgbVal) == gui.QColor:
+            rgbVal = rgbVal.rgb() & 0xFFFFFF
         self.setStyleSheet(self.__styleSheet % hex(rgbVal)[2:].zfill(6))
+
+    def mouseReleaseEvent(self, evnt):
+        super(ColorDisplay,self).mouseReleaseEvent(evnt)
+
+        withinFrame = evnt.x() in range(0, self.width()) and evnt.y() in range(0, self.height())
+        
+        if evnt.button() == QtCore.Qt.MouseButton.LeftButton and withinFrame:
+            self.__colorDialog.show()
+            self.__colorDialog.activateWindow()
+            self.__colorDialog.exec_()
+
+    def colorDialogAcceptedEvent(self, method):
+        self.__colorDialog.colorSelected.connect(method)
+        
+        
