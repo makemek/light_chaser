@@ -22,7 +22,9 @@ class SerialController(Observer):
         
     def notify(self, color):
         try:
+            self.__led.storeState(color)
             self.__port.sendByte(color,3)
+
         except: # unplugged
             self.__led.default()
             self.__view.setConnect(False)
@@ -32,11 +34,13 @@ class SerialController(Observer):
     def __toggleLED(self, isChecked):
         # turn off
         if not isChecked and self.__isConnected:
-            self.notify(0)
+            try: self.__port.sendByte(0,3)
+            except: pass
 
         # turn on
         elif isChecked and self.__isConnected:
             rgb = self.__led.retrieveLastState()
+            print(rgb)
             self.notify(rgb)
 
     def bridgeConnection(self):
