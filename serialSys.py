@@ -15,7 +15,7 @@ class SerialController(Observer):
         self.__led = led.Rgb_Led()
 
         self.__view.setConnectButtonListener(self.bridgeConnection)
-        self.__view.setLEDListener(self.__toggleLED)
+        self.__view.addLEDListener(self.__toggleLED)
 
         self.__isConnected = self.__port.isOpen()
         self.__view.setConnect(self.__isConnected)
@@ -127,7 +127,7 @@ class SerialView(QtGui.QWidget):
         self.setLayout(mainLayout)
         
     def __connectSignal(self):
-        self.setLEDListener(self.__mediator.serialReady)
+        self.addLEDListener(self.__mediator.serialReady)
 
     def getPort(self):
         
@@ -157,7 +157,7 @@ class SerialView(QtGui.QWidget):
     def setConnectButtonListener(self, func):
         self.__connectBt.clicked.connect(func)
 
-    def setLEDListener(self, func):
+    def addLEDListener(self, func):
         self.__ledSwitch.toggled.connect(func)
 
     def setLEDSwitch(self, isEnable):
