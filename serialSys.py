@@ -91,7 +91,8 @@ class SerialPort:
             pass
         
     def sendByte(self, byte):
-        self.__port.write(chr(byte).encode())
+        byte = byte.to_bytes(1, byteorder='big')
+        self.__port.write(byte)
 
     def isOpen(self):
         return self.__port.isOpen()
