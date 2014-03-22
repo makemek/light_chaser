@@ -1,4 +1,5 @@
 import PySide.QtGui as QtGui
+import random
 
 class EffectView(QtGui.QWidget):
     
@@ -38,4 +39,33 @@ class EffectView(QtGui.QWidget):
         mainLayout.addWidget(self.__smoothTransCb)
 
         self.setLayout(mainLayout)
+
+    def isVariating(self):
+        return self.__smoothTransCb.isChecked()
+
+    def isRandom(self):
+        return self.__randomizeCb.isChecked()
+
+    def getSpeed(self):
+        return self.__speedSb.value()
         
+class RgbVariator:
+    
+    def __init__(self, target=QtGui.QColor(0)):
+        self.__timer
+
+        self.__target = target
+        self.__current = QtGui.QColor(0)
+
+    def variate(self):
+        pass
+
+    def setTargetColor(self, color):
+        if type(color) == int:
+            self.__target.setRgb(color)
+
+        elif type(color) == QtGui.QColor:
+            self.__target = color
+
+    def setCurrentColor(color):
+        pass
