@@ -18,7 +18,7 @@ class SerialController(Observer):
         self.__view.setLEDListener(self.__toggleLED)
 
         self.__isConnected = self.__port.isOpen()
-        self.__view.setConnect(self.__port.isOpen())
+        self.__view.setConnect(self.__isConnected)
         
     def notify(self, color):
         try:
@@ -105,7 +105,6 @@ class SerialView(QtGui.QWidget):
         super(SerialView, self).__init__(self.__parent)
         
         self.__createComponents()
-        self.__setupComponents()
         self.__layoutComponents()
         
     def __createComponents(self):
@@ -114,10 +113,6 @@ class SerialView(QtGui.QWidget):
         self.__connectBt = QtGui.QPushButton(self)
         self.__ledSwitch = QtGui.QRadioButton("Turn on LED", self)
             
-    def __setupComponents(self):
-        self.__ledSwitch.setEnabled(False)
-        self.setConnect(False)
-
     def __layoutComponents(self):
         stat = QtGui.QHBoxLayout()
         stat.addWidget(self.__statusLabel)
@@ -153,6 +148,7 @@ class SerialView(QtGui.QWidget):
 
         self.__ledSwitch.setEnabled(isConnect)
         self.__ledSwitch.setChecked(isConnect)
+        self.__mediator.serialReady(isConnect)
        
     def setConnectButtonListener(self, func):
         self.__connectBt.clicked.connect(func)
