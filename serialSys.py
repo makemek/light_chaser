@@ -2,6 +2,7 @@
 
 from subjectObserver import *
 import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 import LED as led
 
 import serial as PySerial
@@ -50,7 +51,9 @@ class SerialController(Observer):
                 self.__port.openPort(portName)
                 self.__view.setConnect(True)
                 self.__isConnected = True
-
+                
+                QtCore.QTimer.singleShot(2000, lambda: self.notify(self.__led.retrieveLastState()))
+               
             except PySerial.serialutil.SerialException as e:
                 QtGui.QMessageBox().critical(None, "Port initialization failed", e.args[0])
 
@@ -79,7 +82,7 @@ class SerialPort:
 
         self.__port.setPort(portName)
         self.__port.setBaudrate(9600)
-        self.__port.setTimeout(2)
+        #self.__port.setTimeout(2)
         self.__port.open()
             
     def closePort(self):
