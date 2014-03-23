@@ -168,6 +168,7 @@ class ColorDisplay(gui.QFrame):
         if type(rgbVal) == gui.QColor:
             rgbVal = rgbVal.rgb() & 0xFFFFFF
         self.setStyleSheet(self.__styleSheet % hex(rgbVal)[2:].zfill(6))
+        self.__colorDialog.setCurrentColor(rgbVal)
 
     def mouseReleaseEvent(self, evnt):
         super(ColorDisplay,self).mouseReleaseEvent(evnt)
@@ -177,7 +178,6 @@ class ColorDisplay(gui.QFrame):
         if evnt.button() == QtCore.Qt.MouseButton.LeftButton and withinFrame:
             self.__colorDialog.show()
             self.__colorDialog.activateWindow()
-            self.__colorDialog.exec_()
 
     def connectColorDialogAcceptedEvent(self, method):
         self.__colorDialog.colorSelected.connect(method)
