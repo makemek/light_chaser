@@ -24,11 +24,5 @@ class Mediator:
         self.__currentView.setEnabled(isReady)
         self.__effectView.setEnabled(isReady)
 
-    def changeCurrentColorView(self, color):
-        self.__currentView.setColor(color)
-
-    def changeTargetColorView(self, color):
-        self.__targetView.setColor(color)
-
     def enableSmooth(self, isEnable):
         self.__targetView.setVisible(isEnable)

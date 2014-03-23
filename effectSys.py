@@ -1,4 +1,5 @@
 import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 import random
 
 class EffectView(QtGui.QWidget):
@@ -23,7 +24,8 @@ class EffectView(QtGui.QWidget):
         self.__speedSb.setEnabled(False)
 
     def __connectSignal(self):
-        self.__randomizeCb.stateChanged.connect(self.__speedSb.setEnabled)
+        self.__randomizeCb.toggled.connect(self.__speedSb.setEnabled)
+        self.__smoothTransCb.toggled.connect(self.__mediator.enableSmooth)
 
     def __layoutComponents(self):
         mainLayout = QtGui.QVBoxLayout()
@@ -53,13 +55,17 @@ class EffectView(QtGui.QWidget):
 class RgbVariator:
     
     def __init__(self, target=QtGui.QColor(0)):
-        self.__timer
-
         self.__target = target
         self.__current = QtGui.QColor(0)
 
-    def variate(self):
-        pass
+    def variate(self, step):
+        sameRed = self.__target.red() == self.__current.red()
+        sameGreen = self.__target.green() == self.__current.green()
+        sameBlue = self.__target.blue() == self.__current.blue()
+
+        if not sameRed: self.__current.setRed(self.__current.red() + step)
+        if not sameGreen: self.__current.setGreen(self.__current.green() + step)
+        if not sameBlue: self.__current.setRed(self.__current.blue() + step)
 
     def setTargetColor(self, color):
         if type(color) == int:
@@ -68,5 +74,8 @@ class RgbVariator:
         elif type(color) == QtGui.QColor:
             self.__target = color
 
-    def setCurrentColor(color):
-        pass
+    def setCurrentColor(self, color):
+        self.__current = color
+
+    def getCurrentColor(self):
+        return self.__current
