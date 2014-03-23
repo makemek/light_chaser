@@ -181,5 +181,9 @@ class ColorDisplay(gui.QFrame):
 
     def connectColorDialogAcceptedEvent(self, method):
         self.__colorDialog.colorSelected.connect(method)
+
+    def setEnabled(self, isEnable):
+        self.__colorDialog.close()
+        super(ColorDisplay, self).setEnabled(isEnable)
         
         
