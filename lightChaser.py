@@ -18,6 +18,8 @@ class LightChaser(QtGui.QWidget):
         self.__setupEffectSys()
         self.__layoutComponents()
 
+        self.setFixedSize(self.minimumWidth(), self.minimumHeight())
+
     def __createView(self):
         communicationSys = Mediator()
 
