@@ -22,7 +22,7 @@ class LightChaser(QtGui.QWidget):
         communicationSys = Mediator()
 
         self.__serialView = SerialView(self, communicationSys)
-        self.__targetStat = ColorView("Target", self, communicationSys)
+        self.__targetStat = ColorView("Target  ", self, communicationSys)
         self.__currentStat = ColorView("Current", self, communicationSys)
         self.__effectView = EffectView(self, communicationSys)
 
