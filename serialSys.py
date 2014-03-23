@@ -52,7 +52,7 @@ class SerialController(Observer):
                 self.__view.setConnect(True)
                 self.__isConnected = True
                 
-                QtCore.QTimer.singleShot(2000, lambda: self.notify(self.__led.retrieveLastState()))
+                QtCore.QTimer.singleShot(2000, lambda: self.__toggleLED(self.__view.ledChecked()))
                
             except PySerial.serialutil.SerialException as e:
                 QtGui.QMessageBox().critical(None, "Port initialization failed", e.args[0])
@@ -166,6 +166,9 @@ class SerialView(QtGui.QWidget):
 
     def setLEDSwitch(self, isEnable):
         self.__ledSwitch.setEnabled(isEnable)
+
+    def ledChecked(self):
+        return self.__ledSwitch.isChecked()
 
 
 class PortView(QtGui.QDialog):
