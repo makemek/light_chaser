@@ -63,6 +63,8 @@ class LightChaser(QtGui.QWidget):
 
     def closeEvent(self, event):
         self.__serialModel.closePort()
+        self.__currentStat.setEnabled(False)
+        self.__targetStat.setEnabled(False)
         super(LightChaser, self).closeEvent(event)
 
         
