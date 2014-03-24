@@ -26,6 +26,8 @@ class Mediator:
 
     def enableSmooth(self, isEnable):
         self.__targetView.setVisible(isEnable)
-        parent = self.__targetView.parentWidget()
-        parent.setFixedSize(parent.minimumSizeHint())
+        parent = self.__targetView.parent()
+        sizeHint = parent.minimumSizeHint()
+        if sizeHint.width() > 0 and sizeHint.height() > 0:
+            parent.setFixedSize(sizeHint)
         
