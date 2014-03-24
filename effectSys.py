@@ -2,6 +2,13 @@ import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 import random
 
+class EffectController:
+    
+    def __init__(self, effectView):
+        self.__view = effectView
+        self.__view.setEnableSmoothTrans(False)
+        
+
 class EffectView(QtGui.QWidget):
     
     def __init__(self, parent=None, mediator=None):
@@ -26,6 +33,7 @@ class EffectView(QtGui.QWidget):
     def __connectSignal(self):
         self.__randomizeCb.toggled.connect(self.__speedSb.setEnabled)
         self.__smoothTransCb.toggled.connect(self.__mediator.enableSmooth)
+        
 
     def __layoutComponents(self):
         mainLayout = QtGui.QVBoxLayout()
@@ -51,6 +59,13 @@ class EffectView(QtGui.QWidget):
 
     def getSpeed(self):
         return self.__speedSb.value()
+
+    def setEnableRandom(self, isEnable):
+        self.__randomizeCb.setChecked(isEnable)
+
+    def setEnableSmoothTrans(self, isEnable):
+        self.__smoothTransCb.setChecked(isEnable)
+        self.__mediator.enableSmooth(isEnable)
         
 class RgbVariator:
     

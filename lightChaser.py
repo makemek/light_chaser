@@ -20,6 +20,11 @@ class LightChaser(QtGui.QWidget):
 
         self.setFixedSize(self.minimumWidth(), self.minimumHeight())
 
+        # testing purpose
+        self.__serialView.setConnect(True)
+        self.__currentStat.removeObserver(self.__serialController)
+        
+
     def __createView(self):
         communicationSys = Mediator()
 
@@ -45,7 +50,7 @@ class LightChaser(QtGui.QWidget):
         #self.__colorController = ColorController(self.__targetStat, self.__currentStat)
 
     def __setupEffectSys(self):
-        pass
+        self.__effectController = EffectController(self.__effectView)
 
     def __layoutComponents(self):
         self.__mainLayout = QtGui.QVBoxLayout()
