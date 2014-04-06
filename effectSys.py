@@ -4,9 +4,11 @@ import random
 
 class EffectController:
     
-    def __init__(self, effectView):
+    def __init__(self, effectView, randomizer, variator):
         self.__view = effectView
         self.__view.setEnableSmoothTrans(False)
+        self.__variator = variator
+        self.__randomizer = randomizer
         
 
 class EffectView(QtGui.QWidget):
@@ -66,6 +68,9 @@ class EffectView(QtGui.QWidget):
     def setEnableSmoothTrans(self, isEnable):
         self.__smoothTransCb.setChecked(isEnable)
         self.__mediator.enableSmooth(isEnable)
+
+    def addToggleRandomCheckBoxListener(self, func):
+        self.__randomizeCb.toggled.connect(func)
         
 class RgbVariator:
     
@@ -94,3 +99,12 @@ class RgbVariator:
 
     def getCurrentColor(self):
         return self.__current
+
+class ColorRandomizer:
+
+    def __init__(self):
+        pass
+
+    def randomize():
+        rgb = random.randint(0, 0xFFFFFF)
+        return QtGui.QColor(rgb)
