@@ -4,12 +4,40 @@ import random
 
 class EffectController:
     
-    def __init__(self, effectView, randomizer, variator):
+    def __init__(self, effectView, targetView, currentView):
         self.__view = effectView
         self.__view.setEnableSmoothTrans(False)
-        self.__variator = variator
-        self.__randomizer = randomizer
+        self.__targetView = targetView
+        self.__currentView = currentView
+
+        self.__variator = RgbVariator()
+        self.__randomizer = ColorRandomizer()
+
+        self.__view.toggleRandomPerformed(self.performEffect)
+        self.__timer = QtCore.QTimer()
+
+    def performEffect(self, isChecked):  
+        if isChecked:   
+            self.randomize()
+
+            self.__timer.setSingleShot(False)
+            self.__timer.timeout.connect(self.randomize)
+            self.__timer.start()
+        else:
+            self.__timer.stop()
+
+    def randomize(self):
+        colorPerSec = self.__view.getSpeed()
+        color = ColorRandomizer.randomize()
+        self.__timer.setInterval(self.calculateInterval(colorPerSec)*1000)
+        print(hex(color.rgb()))
+        self.__targetView.setColor(color)
+        self.__currentView.setColor(color)
         
+
+
+    def calculateInterval(self, speed):
+        return 1/speed
 
 class EffectView(QtGui.QWidget):
     
@@ -28,7 +56,7 @@ class EffectView(QtGui.QWidget):
         self.__speedSb = QtGui.QSpinBox(parent=self)
 
     def __setupComponents(self):
-        self.__speedSb.setMinimum(0)
+        self.__speedSb.setMinimum(1)
         self.__speedSb.setMaximum(20)
         self.__speedSb.setEnabled(False)
 
@@ -69,8 +97,11 @@ class EffectView(QtGui.QWidget):
         self.__smoothTransCb.setChecked(isEnable)
         self.__mediator.enableSmooth(isEnable)
 
-    def addToggleRandomCheckBoxListener(self, func):
+    def toggleRandomPerformed(self, func):
         self.__randomizeCb.toggled.connect(func)
+
+    def toggleVariationPerformed(self, func):
+        self.__smoothTransCb.toggled.connect(func)
         
 class RgbVariator:
     
@@ -101,10 +132,8 @@ class RgbVariator:
         return self.__current
 
 class ColorRandomizer:
-
-    def __init__(self):
-        pass
-
+    
+    @staticmethod
     def randomize():
         rgb = random.randint(0, 0xFFFFFF)
         return QtGui.QColor(rgb)

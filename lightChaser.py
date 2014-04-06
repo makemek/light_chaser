@@ -52,7 +52,7 @@ class LightChaser(QtGui.QWidget):
     def __setupEffectSys(self):
         variator = RgbVariator()
         randomizer = ColorRandomizer()
-        self.__effectController = EffectController(self.__effectView, randomizer, variator)
+        self.__effectController = EffectController(self.__effectView, self.__targetStat, self.__currentStat)
 
     def __layoutComponents(self):
         self.__mainLayout = QtGui.QVBoxLayout()

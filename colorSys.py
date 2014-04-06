@@ -10,12 +10,6 @@ class ColorController():
         self.__targetView = targetView
         self.__currentView = currentView
 
-        self.__targetView.setVisible(False) # let effectSys manage
-
-        
-
-
-
 class ColorView(gui.QWidget, Subject):
 
     def __init__(self, name, parent=None, mediator=None):
