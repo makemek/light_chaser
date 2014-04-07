@@ -49,12 +49,11 @@ class EffectController:
         self.__currentView.setColor(color)
 
     def interrupt(self, flag):
-        if flag == False:
-            self.__timer.stop()
-        
-        else:
-            if self.__view.isRandom() or self.__view.isVariating():
-                self.performEffect(1)
+        for timer in self.__effects.values():
+            if flag == False:
+                timer.stop()
+            else:
+                timer.start()
 
     def calculateInterval(self, speed):
         return 1/speed
