@@ -16,10 +16,10 @@ class RgbVariator(Effect):
         self.__current = QtGui.QColor(0)
         self.__step = 1
 
-    def setStep(value):
+    def setStep(self, value):
         self.__step = value
 
-    def calculateInterval(speed):
+    def calculateInterval(self, speed):
         pass
 
     def perform(self):
@@ -46,9 +46,9 @@ class RgbVariator(Effect):
 
 class ColorRandomizer(Effect):
     
-    def calculateInterval(speed):
+    def calculateInterval(self, speed):
         return 1/speed
 
-    def perform():
+    def perform(self):
         rgb = random.randint(0, 0xFFFFFF)
         return QtGui.QColor(rgb)
