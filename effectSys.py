@@ -10,21 +10,33 @@ class EffectController:
         self.__targetView = targetView
         self.__currentView = currentView
 
-        self.__variator = RgbVariator()
         self.__randomizer = ColorRandomizer()
+        self.__variator = RgbVariator()
 
-        self.__view.toggleRandomPerformed(self.performEffect)
+        self.__view.toggleRandomPerformed(lambda isSelected: self.setEnableEffect(isSelected, self.__randomizer))
+        self.__view.toggleVariationPerformed(lambda isSelected: self.setEnableEffect(isSelected, self.__variator))
+
+        self.__effects = set()
+
         self.__timer = QtCore.QTimer()
 
-    def performEffect(self, isChecked):  
-        if isChecked:   
-            self.randomize()
+    def setEnableEffect(self, isSelected, effect):
 
-            self.__timer.setSingleShot(False)
-            self.__timer.timeout.connect(self.randomize)
-            self.__timer.start()
+        if isSelected:
+            self.__effects.add(effect)
         else:
-            self.__timer.stop()
+            self.__effects.remove(effect)
+
+        self.performEffect(self.__effects)
+        
+    def performEffect(self, effects):  
+        if self.__variator in effects and self.__randomizer in effects:
+            print("Special")
+
+        else:
+            for e in effects:
+                print(e)
+        
 
     def randomize(self):
         colorPerSec = self.__view.getSpeed()

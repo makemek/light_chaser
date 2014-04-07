@@ -1,13 +1,28 @@
 import PySide.QtGui as QtGui
 import random
 
-class RgbVariator:
+class Effect:
+
+    def calculateInterval(self, speed):
+        raise NotImplementedError
+
+    def perform(self):
+        raise NotImplementedError
+
+class RgbVariator(Effect):
     
     def __init__(self, target=QtGui.QColor(0)):
         self.__target = target
         self.__current = QtGui.QColor(0)
+        self.__step = 1
 
-    def variate(self, step):
+    def setStep(value):
+        self.__step = value
+
+    def calculateInterval(speed):
+        pass
+
+    def perform(self):
         sameRed = self.__target.red() == self.__current.red()
         sameGreen = self.__target.green() == self.__current.green()
         sameBlue = self.__target.blue() == self.__current.blue()
@@ -29,9 +44,11 @@ class RgbVariator:
     def getCurrentColor(self):
         return self.__current
 
-class ColorRandomizer:
+class ColorRandomizer(Effect):
     
-    @staticmethod
-    def randomize():
+    def calculateInterval(speed):
+        return 1/speed
+
+    def perform():
         rgb = random.randint(0, 0xFFFFFF)
         return QtGui.QColor(rgb)
