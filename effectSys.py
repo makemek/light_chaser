@@ -31,7 +31,6 @@ class EffectController:
         color = ColorRandomizer.randomize()
         self.__timer.setInterval(self.calculateInterval(colorPerSec)*1000)
         print(hex(color.rgb()))
-        self.__targetView.setColor(color)
         self.__currentView.setColor(color)
 
     def interrupt(self, flag):
@@ -40,7 +39,7 @@ class EffectController:
         
         else:
             if self.__view.isRandom() or self.__view.isVariating():
-                self.__timer.start()
+                self.performEffect(1)
 
     def calculateInterval(self, speed):
         return 1/speed
