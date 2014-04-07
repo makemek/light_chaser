@@ -20,16 +20,16 @@ class RgbVariator(Effect):
         self.__step = value
 
     def calculateInterval(self, speed):
-        pass
+        return 1/speed
 
     def perform(self):
         sameRed = self.__target.red() == self.__current.red()
         sameGreen = self.__target.green() == self.__current.green()
         sameBlue = self.__target.blue() == self.__current.blue()
 
-        if not sameRed: self.__current.setRed(self.__current.red() + step)
-        if not sameGreen: self.__current.setGreen(self.__current.green() + step)
-        if not sameBlue: self.__current.setRed(self.__current.blue() + step)
+        if not sameRed: self.__current.setRed(self.__current.red() + self.__step)
+        if not sameGreen: self.__current.setGreen(self.__current.green() + self.__step)
+        if not sameBlue: self.__current.setRed(self.__current.blue() + self.__step)
 
     def setTargetColor(self, color):
         if type(color) == int:
@@ -37,6 +37,9 @@ class RgbVariator(Effect):
 
         elif type(color) == QtGui.QColor:
             self.__target = color
+
+        else:
+            raise TypeError("Accept 'int' or 'QtGui.QColor' got {}".format(type(color)))
 
     def setCurrentColor(self, color):
         self.__current = color

@@ -33,7 +33,8 @@ class EffectController:
         
     def performEffect(self, effects):  
         if self.__variator in effects and self.__randomizer in effects:
-            print("Special")
+            timer = self.__effects[self.__randomizer]
+            timer.stop()
 
         else:
             for effect, timer in effects.items():
@@ -54,9 +55,6 @@ class EffectController:
                 timer.stop()
             else:
                 timer.start()
-
-    def calculateInterval(self, speed):
-        return 1/speed
 
 class EffectView(QtGui.QWidget):
     
