@@ -101,8 +101,11 @@ class ColorView(gui.QWidget, Subject):
     def removeObserver(self, obs):
         self.__obs.remove(obs)
 
+    def getColor(self):
+        return gui.QColor(self.getRed(), self.getGreen(), self.getBlue())
+
     def notifyObserver(self):
-        color = self.getColorAsRGB()
+        color = self.getColor()
         for o in self.__obs:
             o.notify(color)
 

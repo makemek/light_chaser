@@ -23,6 +23,7 @@ class SerialController(Observer):
         
     def notify(self, color):
         try:
+            color = color.rgb()
             self.__led.storeState(color)
             self.__port.sendByte(color,3)
 
