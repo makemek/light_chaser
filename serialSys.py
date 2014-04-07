@@ -69,6 +69,25 @@ class SerialController(Observer):
 
             except PySerial.serialutil.SerialException as e:
                 QtGui.QMessageBox().critical(None, "Port terminaltion failed", e.args[0])
+    
+    @staticmethod
+    def availablePorts():
+        '''
+        Returns a generator for all available serial ports
+        '''
+        if os.name == 'nt':
+            # windows
+            for i in range(256):
+                try:
+                    s = PySerial.Serial(i)
+                    s.close()
+                    yield 'COM' + str(i + 1)
+                except PySerial.serialutil.SerialException:
+                    pass
+        else:
+            # unix
+            for port in list_ports.comports():
+                yield port[0]
 
 class SerialPort:
     def __init__(self):
@@ -225,7 +244,7 @@ class PortView(QtGui.QDialog):
 
     def refreshPort(self):
         self.__portList.clear()
-        for port in self.__serial_ports():
+        for port in SerialController.availablePorts():
             self.__portList.addItem(port)
 
         if self.__portList.count() == 0:
@@ -233,24 +252,6 @@ class PortView(QtGui.QDialog):
 
         else:
             self.__okBt.setEnabled(True)
-
-    def __serial_ports(self):
-        '''
-        Returns a generator for all available serial ports
-        '''
-        if os.name == 'nt':
-            # windows
-            for i in range(256):
-                try:
-                    s = PySerial.Serial(i)
-                    s.close()
-                    yield 'COM' + str(i + 1)
-                except PySerial.serialutil.SerialException:
-                    pass
-        else:
-            # unix
-            for port in list_ports.comports():
-                yield port[0]
 
 
 
