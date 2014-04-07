@@ -27,9 +27,24 @@ class RgbVariator(Effect):
         sameGreen = self.__target.green() == self.__current.green()
         sameBlue = self.__target.blue() == self.__current.blue()
 
-        if not sameRed: self.__current.setRed(self.__current.red() + self.__step)
-        if not sameGreen: self.__current.setGreen(self.__current.green() + self.__step)
-        if not sameBlue: self.__current.setRed(self.__current.blue() + self.__step)
+        newRed, newGreen, newBlue = 0,0,0
+
+        if not sameRed: 
+            newRed = self.__variate(self.__current.red(), self.__target.red())
+        if not sameGreen: 
+            newGreen = self.__variate(self.__current.green(), self.__target.green())
+        if not sameBlue:
+            newBlue = self.__variate(self.__current.blue(), self.__target.blue())
+
+        return self.getCurrentColor()
+
+    def __variate(self, src, target):
+        if src < target:
+            src += self.__step
+        elif src > target:
+            src -= self.__step
+
+        return src
 
     def setTargetColor(self, color):
         if type(color) == int:
