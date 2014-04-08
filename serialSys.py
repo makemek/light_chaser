@@ -31,6 +31,7 @@ class SerialController(Observer):
             self.__view.setConnect(False)
             if self.__port.isOpen():
                 self.__port.closePort()
+                self.__isConnected = False
 
     def __toggleLED(self, isChecked):
         # turn off
@@ -108,9 +109,10 @@ class SerialPort:
         print("Close Port")
         try:
             self.sendByte(0,3)
-            self.__port.close()
         except:
             pass
+        finally:
+            self.__port.close()
         
     def sendByte(self, byte, amount, _byteorder='big'):
         byte = byte.to_bytes(amount, byteorder=_byteorder)
