@@ -73,6 +73,7 @@ class LightChaser(QtGui.QWidget):
         self.__serialModel.closePort()
         self.__currentStat.setEnabled(False)
         self.__targetStat.setEnabled(False)
+        self.__effectController.interrupt(0)
         super(LightChaser, self).closeEvent(event)
 
         
