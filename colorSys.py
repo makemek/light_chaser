@@ -81,6 +81,9 @@ class ColorView(gui.QWidget, Subject):
         rgb |= self.getRed() << 16
         return rgb
 
+    def getColor(self):
+        return gui.QColor(self.getRed(), self.getGreen(), self.getBlue())
+
     def getRed(self):
         return self.__red.getValue()
 

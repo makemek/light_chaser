@@ -1,6 +1,6 @@
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
-import random
+from effect import *
 
 class EffectController:
     
@@ -10,34 +10,70 @@ class EffectController:
         self.__targetView = targetView
         self.__currentView = currentView
 
-        self.__variator = RgbVariator()
         self.__randomizer = ColorRandomizer()
+        self.__variator = RgbVariator()
 
-        self.__view.toggleRandomPerformed(self.performEffect)
-        self.__timer = QtCore.QTimer()
+        self.__view.toggleRandomPerformed(lambda isSelected: self.setEnableEffect(isSelected, self.__randomizer))
+        self.__view.toggleVariationPerformed(lambda isSelected: self.setEnableEffect(isSelected, self.__variator))
 
-    def performEffect(self, isChecked):  
-        if isChecked:   
-            self.randomize()
+        self.__effects = {}
 
-            self.__timer.setSingleShot(False)
-            self.__timer.timeout.connect(self.randomize)
-            self.__timer.start()
+    def setEnableEffect(self, isSelected, effect):
+
+        if isSelected:
+            self.__effects[effect] = QtCore.QTimer()
+
         else:
-            self.__timer.stop()
+            timer = self.__effects.pop(effect)
+            timer.stop()
 
-    def randomize(self):
-        colorPerSec = self.__view.getSpeed()
-        color = ColorRandomizer.randomize()
-        self.__timer.setInterval(self.calculateInterval(colorPerSec)*1000)
-        print(hex(color.rgb()))
-        self.__targetView.setColor(color)
-        self.__currentView.setColor(color)
+        self.performEffect(self.__effects)
         
+    def performEffect(self, effects):  
+        if self.__variator in effects and self.__randomizer in effects:
+            self.__effects[self.__randomizer].stop()
+            #self.__effects[self.__variator].stop()
 
+        if self.__variator in effects:
+            timer = self.__effects[self.__variator]
+            self.__handleVariation(self.__variator, timer)
+            timer.setSingleShot(False)
+            timer.timeout.connect(lambda: self.__handleVariation(self.__variator, timer))
+            timer.start()
 
-    def calculateInterval(self, speed):
-        return 1/speed
+        else:
+            for effect, timer in effects.items():
+                self.__handleCommon(effect, timer)
+                timer.setSingleShot(False)
+                timer.timeout.connect(lambda: self.__handleCommon(effect, timer))
+                timer.start()
+
+    def __handleVariation(self, effect, timer):
+        ''' Polling method '''
+        targetColor = self.__targetView.getColor()
+        currentColor = self.__currentView.getColor()
+
+        if currentColor == targetColor and self.__view.isRandom():
+            targetColor = self.__randomizer.perform()
+            self.__targetView.setColor(targetColor)
+
+        self.__variator.setTargetColor(targetColor)
+        self.__variator.setCurrentColor(currentColor)
+        self.__handleCommon(effect, timer)
+        
+        
+    def __handleCommon(self, effect, timer):
+        colorPerSec = effect.calculateInterval(self.__view.getSpeed())
+        timer.setInterval(colorPerSec*1000)
+        color = effect.perform()
+        self.__currentView.setColor(color)
+
+    def interrupt(self, flag):
+        if flag == False:
+            for timer in self.__effects.values():
+                timer.stop()
+        else:
+            self.performEffect(self.__effects)
 
 class EffectView(QtGui.QWidget):
     
@@ -57,11 +93,11 @@ class EffectView(QtGui.QWidget):
 
     def __setupComponents(self):
         self.__speedSb.setMinimum(1)
-        self.__speedSb.setMaximum(20)
-        self.__speedSb.setEnabled(False)
+        self.__speedSb.setMaximum(40)
+        #self.__speedSb.setEnabled(False)
 
     def __connectSignal(self):
-        self.__randomizeCb.toggled.connect(self.__speedSb.setEnabled)
+        #self.__randomizeCb.toggled.connect(self.__speedSb.setEnabled)
         self.__smoothTransCb.toggled.connect(self.__mediator.enableSmooth)
         
 
@@ -103,37 +139,3 @@ class EffectView(QtGui.QWidget):
     def toggleVariationPerformed(self, func):
         self.__smoothTransCb.toggled.connect(func)
         
-class RgbVariator:
-    
-    def __init__(self, target=QtGui.QColor(0)):
-        self.__target = target
-        self.__current = QtGui.QColor(0)
-
-    def variate(self, step):
-        sameRed = self.__target.red() == self.__current.red()
-        sameGreen = self.__target.green() == self.__current.green()
-        sameBlue = self.__target.blue() == self.__current.blue()
-
-        if not sameRed: self.__current.setRed(self.__current.red() + step)
-        if not sameGreen: self.__current.setGreen(self.__current.green() + step)
-        if not sameBlue: self.__current.setRed(self.__current.blue() + step)
-
-    def setTargetColor(self, color):
-        if type(color) == int:
-            self.__target.setRgb(color)
-
-        elif type(color) == QtGui.QColor:
-            self.__target = color
-
-    def setCurrentColor(self, color):
-        self.__current = color
-
-    def getCurrentColor(self):
-        return self.__current
-
-class ColorRandomizer:
-    
-    @staticmethod
-    def randomize():
-        rgb = random.randint(0, 0xFFFFFF)
-        return QtGui.QColor(rgb)

@@ -50,9 +50,8 @@ class LightChaser(QtGui.QWidget):
         #self.__colorController = ColorController(self.__targetStat, self.__currentStat)
 
     def __setupEffectSys(self):
-        variator = RgbVariator()
-        randomizer = ColorRandomizer()
         self.__effectController = EffectController(self.__effectView, self.__targetStat, self.__currentStat)
+        self.__serialView.addLEDListener(self.__effectController.interrupt)
 
     def __layoutComponents(self):
         self.__mainLayout = QtGui.QVBoxLayout()
@@ -74,6 +73,7 @@ class LightChaser(QtGui.QWidget):
         self.__serialModel.closePort()
         self.__currentStat.setEnabled(False)
         self.__targetStat.setEnabled(False)
+        self.__effectController.interrupt(0)
         super(LightChaser, self).closeEvent(event)
 
         
