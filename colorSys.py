@@ -108,7 +108,7 @@ class ColorView(gui.QWidget, Subject):
         return gui.QColor(self.getRed(), self.getGreen(), self.getBlue())
 
     def notifyObserver(self):
-        color = self.getColor()
+        color = self.getColorAsRGB()
         for o in self.__obs:
             o.notify(color)
 
