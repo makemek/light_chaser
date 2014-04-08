@@ -32,7 +32,11 @@ class EffectController:
     def performEffect(self, effects):  
         if self.__variator in effects and self.__randomizer in effects:
             self.__effects[self.__randomizer].stop()
-            #self.__effects[self.__variator].stop()
+            self.__effects[self.__variator].stop()
+
+            # replace timer
+            self.__effects[self.__variator] = QtCore.QTimer()
+            self.__effects[self.__randomizer] = QtCore.QTimer()
 
         if self.__variator in effects:
             timer = self.__effects[self.__variator]
