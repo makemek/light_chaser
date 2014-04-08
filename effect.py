@@ -23,11 +23,15 @@ class RgbVariator(Effect):
         return 1/speed
 
     def perform(self):
+        #print("Variating")
+        #print("Current: " + self.__current.__str__())
+        #print("Target: " + self.__target.__str__())
+        #print()
         sameRed = self.__target.red() == self.__current.red()
         sameGreen = self.__target.green() == self.__current.green()
         sameBlue = self.__target.blue() == self.__current.blue()
 
-        newRed, newGreen, newBlue = 0,0,0
+        newRed, newGreen, newBlue = self.__current.red(),self.__current.green(),self.__current.blue()
 
         if not sameRed: 
             newRed = self.__variate(self.__current.red(), self.__target.red())
@@ -36,7 +40,7 @@ class RgbVariator(Effect):
         if not sameBlue:
             newBlue = self.__variate(self.__current.blue(), self.__target.blue())
 
-        return self.getCurrentColor()
+        return QtGui.QColor(newRed, newGreen, newBlue)
 
     def __variate(self, src, target):
         if src < target:
