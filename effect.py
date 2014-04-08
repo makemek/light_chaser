@@ -20,13 +20,9 @@ class RgbVariator(Effect):
         self.__step = value
 
     def calculateInterval(self, speed):
-        return 1/speed
+        return 1/(speed*5)
 
     def perform(self):
-        #print("Variating")
-        #print("Current: " + self.__current.__str__())
-        #print("Target: " + self.__target.__str__())
-        #print()
         sameRed = self.__target.red() == self.__current.red()
         sameGreen = self.__target.green() == self.__current.green()
         sameBlue = self.__target.blue() == self.__current.blue()
