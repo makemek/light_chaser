@@ -68,15 +68,12 @@ class EffectController:
         color = effect.perform()
         self.__currentView.setColor(color)
 
-    def __routine(self):
-        pass
-
     def interrupt(self, flag):
-        for timer in self.__effects.values():
-            if flag == False:
+        if flag == False:
+            for timer in self.__effects.values():
                 timer.stop()
-            else:
-                timer.start()
+        else:
+            self.performEffect(self.__effects)
 
 class EffectView(QtGui.QWidget):
     
