@@ -22,11 +22,15 @@ class SerialController(Observer):
         self.__view.setConnect(self.__isConnected)
         
     def notify(self, color):
+        self.__led.storeState(color)
+
+        if not self.__isConnected or not self.__view.ledChecked():
+            return
+
         try:
-            self.__led.storeState(color)
             self.__port.sendByte(color,3)
 
-        except: # unplugged
+        except:
             self.__led.default()
             self.__view.setConnect(False)
             if self.__port.isOpen():
@@ -152,7 +156,8 @@ class SerialView(QtGui.QWidget):
         self.setLayout(mainLayout)
         
     def __connectSignal(self):
-        self.addLEDListener(self.__mediator.serialReady)
+        pass
+        #self.addLEDListener(self.__mediator.serialReady)
 
     def getPort(self):
         
@@ -177,7 +182,6 @@ class SerialView(QtGui.QWidget):
 
         self.__ledSwitch.setEnabled(isConnect)
         self.__ledSwitch.setChecked(isConnect)
-        self.__mediator.serialReady(isConnect)
        
     def setConnectButtonListener(self, func):
         self.__connectBt.clicked.connect(func)

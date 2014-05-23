@@ -21,8 +21,8 @@ class LightChaser(QtGui.QWidget):
         self.setFixedSize(self.minimumWidth(), self.minimumHeight())
 
         # testing purpose
-        self.__serialView.setConnect(True)
-        self.__currentStat.removeObserver(self.__serialController)
+        #self.__serialView.setConnect(True)
+        #self.__currentStat.removeObserver(self.__serialController)
         
 
     def __createView(self):
@@ -51,7 +51,7 @@ class LightChaser(QtGui.QWidget):
 
     def __setupEffectSys(self):
         self.__effectController = EffectController(self.__effectView, self.__targetStat, self.__currentStat)
-        self.__serialView.addLEDListener(self.__effectController.interrupt)
+        #self.__serialView.addLEDListener(self.__effectController.interrupt)
 
     def __layoutComponents(self):
         self.__mainLayout = QtGui.QVBoxLayout()
