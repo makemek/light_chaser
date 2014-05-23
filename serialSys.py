@@ -55,7 +55,9 @@ class SerialController(Observer):
         if not self.__isConnected:
             try:
                 portName = self.__view.getPort()
-                self.__port.openPort(portName)
+                self.__port.setPort(portName)
+                self.__port.setBaudrate(9600)
+                self.__port.open()
                 self.__view.setConnect(True)
                 self.__isConnected = True
                 
@@ -96,20 +98,9 @@ class SerialController(Observer):
             for port in list_ports.comports():
                 yield port[0]
 
-class SerialPort:
-    def __init__(self):
-        self.__port = PySerial.Serial()
+class SerialPort(PySerial.Serial):
         
-    def openPort(self, portName):
-        print("Open port")
 
-        if portName == "":
-            raise ValueError
-
-        self.__port.setPort(portName)
-        self.__port.setBaudrate(9600)
-        #self.__port.setTimeout(2)
-        self.__port.open()
             
     def closePort(self):
         print("Close Port")
@@ -118,14 +109,13 @@ class SerialPort:
         except:
             pass
         finally:
-            self.__port.close()
+            self.close()
         
     def sendByte(self, byte, amount, _byteorder='big'):
         byte = byte.to_bytes(amount, byteorder=_byteorder)
-        self.__port.write(byte)
+        self.write(byte)
 
-    def isOpen(self):
-        return self.__port.isOpen()
+
 
 class SerialView(GuiActivity):
 

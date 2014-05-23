@@ -117,21 +117,20 @@ class ColorView(GuiActivity, Subject):
         self.__display.setEnabled(isEnable)
         super(ColorView, self).setEnabled(isEnable)
         
-class ColorAdjuster(gui.QWidget):
+class ColorAdjuster(GuiActivity):
 
     def __init__(self, channel, parent=None):
         super(ColorAdjuster, self).__init__(parent)
-        self.__createComponents(channel)
-        self.__setupComponents()
-        self.__connectSignal()
-        self.__layoutComponents()
 
-    def __createComponents(self, name):
-        self.__label = gui.QLabel(name, self)
+
+        self.__label.setText(channel)
+
+    def _createComponents(self):
+        self.__label = gui.QLabel(self)
         self.__spinBox = gui.QSpinBox(self)
         self.__slider = gui.QSlider(self)
 
-    def __setupComponents(self):
+    def _setupComponents(self):
         self.__spinBox.setMinimum(0)
         self.__slider.setMinimum(0)
 
@@ -140,7 +139,7 @@ class ColorAdjuster(gui.QWidget):
 
         self.__slider.setOrientation(QtCore.Qt.Horizontal)
 
-    def __connectSignal(self):
+    def _connectSignal(self):
         self.__spinBox.valueChanged.connect(self.__slider.setValue)
         self.__slider.valueChanged.connect(self.__spinBox.setValue)
 
@@ -148,7 +147,7 @@ class ColorAdjuster(gui.QWidget):
         self.__spinBox.valueChanged.connect(func)
         #self.__slider.valueChanged.connect(func) # signal conflict (send multiple times) because set both value change cause signal to send both
 
-    def __layoutComponents(self):
+    def _layoutComponents(self):
         mainLayout = gui.QVBoxLayout()
         formLayout = gui.QFormLayout()
 
