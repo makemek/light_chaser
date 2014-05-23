@@ -3,7 +3,9 @@
 from subjectObserver import *
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
+
 import LED as led
+from guiActivity import GuiActivity
 
 import serial as PySerial
 import os
@@ -125,25 +127,24 @@ class SerialPort:
     def isOpen(self):
         return self.__port.isOpen()
 
-class SerialView(QtGui.QWidget):
+class SerialView(GuiActivity):
 
     def __init__(self, parent=None, mediator=None):
         self.__parent = parent
         self.__mediator = mediator
 
         super(SerialView, self).__init__(self.__parent)
-        
-        self.__createComponents()
-        self.__layoutComponents()
-        self.__connectSignal()
-        
-    def __createComponents(self):
+                
+    def _createComponents(self):
         self.__statusLabel = QtGui.QLabel("Arduino Status", self)
         self.__status = QtGui.QLabel(self)
         self.__connectBt = QtGui.QPushButton(self)
         self.__ledSwitch = QtGui.QRadioButton("Turn on LED", self)
             
-    def __layoutComponents(self):
+    def _setupComponents(self):
+        pass
+
+    def _layoutComponents(self):
         stat = QtGui.QHBoxLayout()
         stat.addWidget(self.__statusLabel)
         stat.addWidget(self.__status)
@@ -155,7 +156,7 @@ class SerialView(QtGui.QWidget):
 
         self.setLayout(mainLayout)
         
-    def __connectSignal(self):
+    def _connectSignal(self):
         pass
         #self.addLEDListener(self.__mediator.serialReady)
 

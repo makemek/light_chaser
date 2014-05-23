@@ -1,6 +1,7 @@
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 from effect import *
+from guiActivity import GuiActivity
 
 class EffectController:
     
@@ -79,33 +80,30 @@ class EffectController:
         else:
             self.performEffect(self.__effects)
 
-class EffectView(QtGui.QWidget):
+class EffectView(GuiActivity):
     
     def __init__(self, parent=None, mediator=None):
         self.__mediator = mediator
         super(EffectView, self).__init__(parent)
-        self.__createComponents()
-        self.__setupComponents()
-        self.__connectSignal()
-        self.__layoutComponents()
 
-    def __createComponents(self):
+
+    def _createComponents(self):
         self.__randomizeCb = QtGui.QCheckBox("Randomize", parent=self)
         self.__colorPerSecLbl = QtGui.QLabel("color per second", parent=self)
         self.__smoothTransCb = QtGui.QCheckBox("Smooth transition", parent=self)
         self.__speedSb = QtGui.QSpinBox(parent=self)
 
-    def __setupComponents(self):
+    def _setupComponents(self):
         self.__speedSb.setMinimum(1)
         self.__speedSb.setMaximum(40)
         #self.__speedSb.setEnabled(False)
 
-    def __connectSignal(self):
+    def _connectSignal(self):
         #self.__randomizeCb.toggled.connect(self.__speedSb.setEnabled)
         self.__smoothTransCb.toggled.connect(self.__mediator.enableSmooth)
         
 
-    def __layoutComponents(self):
+    def _layoutComponents(self):
         mainLayout = QtGui.QVBoxLayout()
 
         randomOpt = QtGui.QHBoxLayout()

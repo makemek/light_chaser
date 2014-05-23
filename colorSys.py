@@ -1,6 +1,7 @@
 import PySide.QtGui as gui
 import PySide.QtCore as QtCore
 from subjectObserver import Subject
+from guiActivity import GuiActivity
 
 # may use mediator design pattern instead
 
@@ -10,22 +11,22 @@ class ColorController():
         self.__targetView = targetView
         self.__currentView = currentView
 
-class ColorView(gui.QWidget, Subject):
+class ColorView(GuiActivity, Subject):
 
-    def __init__(self, name, parent=None, mediator=None):
+    def __init__(self, name="", parent=None, mediator=None):
         self.__mediator= mediator
         super(ColorView, self).__init__(parent)
-        self.__createComponents(name)
-        self.__setupComponents()
-        self.__layoutComponents()
-        self.__connectSignal()
+        self.setTitle(name)
 
         self.__obs = []
         #self.actionPerformed(self.notifyObserver)
 
-    def __createComponents(self, name):
+    def setTitle(self, name):
+        self.__headerLbl.setText(name)
+
+    def _createComponents(self):
         # Labels
-        self.__headerLbl = gui.QLabel(name, self)
+        self.__headerLbl = gui.QLabel(self)
         
         # Spinboxes & Slider
         self.__red = ColorAdjuster("RED", self)
@@ -35,10 +36,10 @@ class ColorView(gui.QWidget, Subject):
         # Color display
         self.__display = ColorDisplay(parent=self)
 
-    def __setupComponents(self):
+    def _setupComponents(self):
         self.__display.setMinimumSize(60,60)
         
-    def __layoutComponents(self):
+    def _layoutComponents(self):
         mainLayout = gui.QHBoxLayout()
         mainLayout.addWidget(self.__headerLbl)
         mainLayout.addWidget(self.__red)
@@ -48,7 +49,7 @@ class ColorView(gui.QWidget, Subject):
 
         self.setLayout(mainLayout)
         
-    def __connectSignal(self):
+    def _connectSignal(self):
         self.__red.connect(self.__colorChanged)
         self.__green.connect(self.__colorChanged)
         self.__blue.connect(self.__colorChanged)
