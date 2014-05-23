@@ -36,7 +36,7 @@ class SerialController(Observer):
             self.__led.default()
             self.__view.setConnect(False)
             if self.__port.isOpen():
-                self.__port.closePort()
+                self.__port.close()
                 self.__isConnected = False
 
     def __toggleLED(self, isChecked):
@@ -72,7 +72,7 @@ class SerialController(Observer):
                
         else:
             try:
-                self.__port.closePort()
+                self.__port.close()
                 self.__view.setConnect(False)
                 self.__isConnected = False
 
@@ -100,16 +100,14 @@ class SerialController(Observer):
 
 class SerialPort(PySerial.Serial):
         
-
-            
-    def closePort(self):
+    def close(self):
         print("Close Port")
         try:
             self.sendByte(0,3)
         except:
             pass
         finally:
-            self.close()
+            super(SerialPort, self).close()
         
     def sendByte(self, byte, amount, _byteorder='big'):
         byte = byte.to_bytes(amount, byteorder=_byteorder)
@@ -158,6 +156,10 @@ class SerialView(GuiActivity):
         ui.activateWindow()
         ui.exec_() # keep executing until it closes.
         
+        isValid = len(ui.getPort()) > 0
+        if not isValid:
+            raise ValueError
+
         return ui.getPort()
 
     def setConnect(self, isConnect):
