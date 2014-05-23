@@ -4,19 +4,14 @@ import PySide.QtCore as QtCore
 from serialSys import *
 from colorSys import *
 from effectSys import *
+from guiActivity import GuiActivity
 
 from mediator import *
 
-class LightChaser(QtGui.QWidget):
+class LightChaser(GuiActivity):
    
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
-
-        self.__createView()
-        self.__setupSerialSys()
-        self.__setupColorSys()
-        self.__setupEffectSys()
-        self.__layoutComponents()
+        super(LightChaser, self).__init__(parent)
 
         self.setFixedSize(self.minimumWidth(), self.minimumHeight())
 
@@ -24,8 +19,7 @@ class LightChaser(QtGui.QWidget):
         #self.__serialView.setConnect(True)
         #self.__currentStat.removeObserver(self.__serialController)
         
-
-    def __createView(self):
+    def _createComponents(self):
         communicationSys = Mediator()
 
         self.__serialView = SerialView(self, communicationSys)
@@ -34,6 +28,14 @@ class LightChaser(QtGui.QWidget):
         self.__effectView = EffectView(self, communicationSys)
 
         self.__registerMediator(communicationSys)
+
+    def _setupComponents(self):
+        self.__setupSerialSys()
+        self.__setupColorSys()
+        self.__setupEffectSys()
+
+    def _connectSignal(self):
+        pass
 
     def __registerMediator(self, mediator):
         mediator.registerSerialView(self.__serialView)
@@ -53,7 +55,7 @@ class LightChaser(QtGui.QWidget):
         self.__effectController = EffectController(self.__effectView, self.__targetStat, self.__currentStat)
         #self.__serialView.addLEDListener(self.__effectController.interrupt)
 
-    def __layoutComponents(self):
+    def _layoutComponents(self):
         self.__mainLayout = QtGui.QVBoxLayout()
         self.setLayout(self.__mainLayout)
 
